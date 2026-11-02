@@ -518,6 +518,8 @@ html.or3d-locked #or3d{min-height:0}
 #or3d .avl.now{color:#1f6b45}
 #or3d .avl.tbd{color:#6b6f76;font-weight:500}
 #or3d .avl.off{color:#8a5a2b;font-weight:500}
+#or3d .spc{display:inline-block;margin-top:6px;padding:2px 8px;border-radius:9px;background:var(--hl);color:var(--accent);font:700 12px/1.4 var(--f)}
+#or3d .card .spc{margin-top:8px;font-size:13px}
 #or3d .cta.off p{margin:0;font:500 14px/1.45 var(--f);color:var(--muted,#6b6f76)}
 #or3d .card .avl{margin:8px 0 2px;font-size:14px}
 #or3d .fgrid input[type=date]{appearance:none;-webkit-appearance:none;display:block;width:100%;min-width:0;min-height:38px;padding:7px 8px;border:1px solid var(--line);border-radius:7px;background:var(--surface);color:var(--ink);font:500 16px var(--f)}
