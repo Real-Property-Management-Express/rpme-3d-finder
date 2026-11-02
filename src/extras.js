@@ -3,13 +3,6 @@
    2. Links into the finder: /apartments?q=2%20bed runs those words through the plain-words search, as if typed, so
       Home page "See 1 bedrooms" style links open the finder already filtered (the visitor can remove the tag). */
 (function(){
-var CSS="#or3d .osrow{display:flex;align-items:center;justify-content:space-between;gap:10px}#or3d .osrow .match{margin:0}"+
-"#or3d .osort{display:inline-flex;align-items:center;gap:6px;flex:none;font:600 12.5px/1 var(--f);color:var(--muted)}"+
-"#or3d .osort select{appearance:auto;height:30px;padding:0 6px;border:1px solid var(--line);border-radius:calc(7px*var(--t2-rk,1));background:var(--surface);color:var(--ink);font:500 13px var(--f);cursor:pointer}"+
-"#or3d .osort select:hover{border-color:var(--navy)}#or3d .osort select:focus-visible{outline:2px solid var(--navy);outline-offset:1px}"+
-"#or3d:has(#campusView[hidden]) .osort,#or3d:has(#aview[hidden]) .osort{display:none}"+
-"@media (max-width:767px){#or3d .osort span{display:none}#or3d .osort select{font-size:16px;height:32px}}";
-if(!document.getElementById('osort-css')){var st=document.createElement('style');st.id='osort-css';st.textContent=CSS;document.head.appendChild(st);}
 var tries=0;
 function init(){
 var O=window.__or,ul=document.getElementById('alist'),mt=document.getElementById('match'),inp=document.getElementById('find');
