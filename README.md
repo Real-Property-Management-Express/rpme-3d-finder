@@ -34,6 +34,12 @@ Page footer:
 - `#or3d` container, with a data embed: `OR3D_UNIT_TOURS`, `OR3D_AMENITY_TOURS`, `OR3D_PROPERTY_TOUR`, and `OR3D_DEMO_TERMS` while sample lease prices are in use.
 - The apartments table embed: static SEO content, `OR3D_FP` plan images and the unit rows.
 - Fees come from the site's T2Settings (`T2.appFee`) until the fee table sync.
+- Live unit data (optional): a hidden Collection List of the Units collection (`hidden`, `data-or3d-units`), each item a div with `data-or3d-unit` = Name (e.g. `6410-203`), `data-status` = Status, `data-date` = Available Date, `data-rent` = Display Rent, `data-terms` = Lease Terms JSON, `data-apply` = Apply URL, plus a child div `data-hide="1"` whose visibility is bound to Hide on Site (switches can't bind to attributes). The finder then:
+  - uses Display Rent (0 shows Call for pricing) and Lease Terms JSON (`[{"months":12,"rent":1485}]`) in the cost estimate;
+  - shows Available now / Available [date] / Leased; Occupied and Down units are left out of the list, dimmed on the map, and their card has no tour or apply buttons;
+  - leaves Hide on Site units out of the list and map matches;
+  - sends Apply now to the unit's Apply URL when set.
+  Blank fields keep the page's unit rows. Store Available Date at noon UTC (or later), because Webflow shows dates in the site's time zone and a midnight-UTC date shows the day before.
 
 ## Releases
 
