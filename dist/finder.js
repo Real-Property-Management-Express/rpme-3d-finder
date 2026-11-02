@@ -119,7 +119,7 @@ var hw=W/2, hd=D/2;
   [].forEach.call(nodes, function(n){
     var id = String(n.getAttribute('data-or3d-unit')||'').trim(); if (!id) return;
     var g = function(k){ return String(n.getAttribute('data-'+k)||'').trim(); };
-    var c = cms[id] = {hide: yes(g('hide')), apply: g('apply')};
+    var c = cms[id] = {hide: yes(g('hide')) || !!n.querySelector('[data-hide]'), apply: g('apply')};
     var rent = g('rent');
     if (rent !== '' && !isNaN(+rent.replace(/[$,]/g,'')) && rows[id]) rows[id][3] = +rent.replace(/[$,]/g,'');
     var t = g('terms');

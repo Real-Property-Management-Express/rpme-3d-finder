@@ -1,8 +1,8 @@
 /* CMS unit data. A hidden Webflow Collection List of the Units collection puts one
    [data-or3d-unit] element per unit on the page, with these attributes bound to CMS fields:
    data-or3d-unit (Name, e.g. 6410-203), data-status, data-date (Available Date),
-   data-rent (Display Rent), data-terms (Lease Terms JSON), data-hide (Hide on Site),
-   data-apply (Apply URL). Anything blank keeps the value from the page's unit rows. */
+   data-rent (Display Rent), data-terms (Lease Terms JSON), data-apply (Apply URL). Hide on Site is a child
+   [data-hide] element shown only when the switch is on (switches can't bind to attributes). Anything blank keeps the value from the page's unit rows. */
 (function(){
   var nodes = document.querySelectorAll('[data-or3d-unit]');
   if (!nodes.length) return;
@@ -22,7 +22,7 @@
   [].forEach.call(nodes, function(n){
     var id = String(n.getAttribute('data-or3d-unit')||'').trim(); if (!id) return;
     var g = function(k){ return String(n.getAttribute('data-'+k)||'').trim(); };
-    var c = cms[id] = {hide: yes(g('hide')), apply: g('apply')};
+    var c = cms[id] = {hide: yes(g('hide')) || !!n.querySelector('[data-hide]'), apply: g('apply')};
     var rent = g('rent');
     if (rent !== '' && !isNaN(+rent.replace(/[$,]/g,'')) && rows[id]) rows[id][3] = +rent.replace(/[$,]/g,'');
     var t = g('terms');
