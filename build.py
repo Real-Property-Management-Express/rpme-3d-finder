@@ -4,7 +4,7 @@ ROOT = os.path.dirname(os.path.abspath(__file__))
 SRC = os.path.join(ROOT, 'src')
 DIST = os.path.join(ROOT, 'dist')
 
-CSS = ['base.css', 'panel.css', 'nav.css', 'calculator.css']
+CSS = ['styles.css']
 GLOBAL_JS = ['overland-geometry.js']
 JS = ['tour.js', 'explore.js', 'extras.js', 'look.js', 'panel.js', 'nav.js', 'app.js', 'calculator.js']
 

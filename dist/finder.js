@@ -243,7 +243,6 @@ try{
 (function(){
 var C='https://cdn.prod.website-files.com/6adaad44213439df69218780/',TX={siding:C+'6ae796d98a535e79728bd598_or3d-siding.jpg',cedar:C+'6ae796d98a535e79728bd5ad_or3d-cedar.jpg',stone:C+'6ae796d930de6dda0dbc672d_or3d-stone.jpg',asphalt:C+'6ae796d93ad9e63e1ac98a54_or3d-asphalt.jpg',grass:C+'6ae796d9d76bbc963cb6927b_or3d-grass.jpg'};
 var root0=document.getElementById('or3d');
-if(root0&&!document.getElementById('lk-css')){var st=document.createElement('style');st.id='lk-css';st.textContent='#or3d:not(.lk-on) #loading{opacity:1!important;pointer-events:auto!important}#or3d #loading:after{content:"";position:absolute;left:50%;top:calc(50% + 22px);width:120px;height:3px;margin-left:-60px;border-radius:3px;background:linear-gradient(90deg,transparent,var(--navy,#003566),transparent) 0 0/50% 100% no-repeat,var(--line,#e7dfcf);animation:lkbar 1.1s ease-in-out infinite}@keyframes lkbar{from{background-position:-60px 0,0 0}to{background-position:180px 0,0 0}}@media (prefers-reduced-motion:reduce){#or3d #loading:after{animation:none}}';document.head.appendChild(st);}
 function ready(){var r=document.getElementById('or3d');if(r)r.classList.add('lk-on');}
 setTimeout(ready,5000);
 var tries=0;
