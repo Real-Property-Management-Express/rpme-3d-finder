@@ -1,0 +1,74 @@
+<header class="of-bar">
+    <h1 class="of-title">Floor Plans &amp; Availability<span>Overland Reserve, Rochester, Minnesota</span></h1>
+    <label class="of-search"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5"/><path d="m13 13 4.5 4.5"/></svg><input id="find" type="search" autocomplete="off" placeholder="Search an apartment, like 6410-203" aria-label="Search for an apartment by building and apartment number"></label>
+    <button type="button" class="ftoggle" id="ftoggle" aria-expanded="false" aria-controls="fmore"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M4.5 8h7M7 12h2"/></svg><span class="lbl">Filters</span><b id="fcount" hidden></b></button>
+  </header>
+  <div class="fmore" id="fmore">
+    <div class="fgrp"><span class="flbl" id="lb-beds">Bedrooms</span><div class="chips" data-f="beds" role="group" aria-labelledby="lb-beds"><button type="button" data-v="0" aria-pressed="false">Studio</button><button type="button" data-v="1" aria-pressed="false">1 bed</button><button type="button" data-v="2" aria-pressed="false">2 bed</button><button type="button" data-v="3" aria-pressed="false">3 bed</button></div></div>
+    <div class="fgrp"><span class="flbl" id="lb-baths">Bathrooms</span><div class="chips" data-f="baths" role="group" aria-labelledby="lb-baths"><button type="button" data-v="1" aria-pressed="false">1 bath</button><button type="button" data-v="2" aria-pressed="false">2 bath</button></div></div>
+    <div class="fgrp"><span class="flbl" id="lb-price">Monthly rent</span><div class="chips" data-f="price" role="group" aria-labelledby="lb-price"><button type="button" data-v="0-1399" aria-pressed="false">Under $1,400</button><button type="button" data-v="1400-1599" aria-pressed="false">$1,400&ndash;$1,599</button><button type="button" data-v="1600-1799" aria-pressed="false">$1,600&ndash;$1,799</button><button type="button" data-v="1800-99999" aria-pressed="false">$1,800+</button></div></div>
+    <div class="fgrid">
+      <label>Square feet<select id="sqft"><option value="">Any</option><option value="0-500">Under 500</option><option value="500-700">500 to 700</option><option value="700-900">700 to 900</option><option value="900-99999">900 and up</option></select></label>
+      <label>Floor plan<select id="plan"><option value="">Any</option></select></label>
+      <label>Floor<select id="floorf"><option value="">Any</option><option value="0">1st</option><option value="1">2nd</option><option value="2">3rd</option></select></label>
+    </div>
+    <div class="frow"><label class="ada"><input type="checkbox" id="ada"> Accessible only</label><button type="button" class="clear" id="clearf">Reset filters</button></div>
+  </div>
+  <div class="of-body">
+    <aside id="panel" aria-label="Apartments and buildings">
+      <div class="p-body">
+        <div class="of-lhead"><p class="match" id="match"></p><ul class="legend" id="legend"></ul></div>
+        <div id="campusView">
+          <div class="ctabs" role="group" aria-label="Show">
+            <button type="button" data-v="a" aria-pressed="true">Apartments</button>
+            <button type="button" data-v="b" aria-pressed="false">Buildings</button>
+          </div>
+          <ul class="blist" id="blist" style="margin-top:10px" hidden></ul>
+          <div id="aview"><ul class="ulist" id="alist"></ul></div>
+        </div>
+        <div id="bldgView" hidden>
+      <button type="button" class="back" id="back"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3 5 8l5 5"/></svg>All buildings</button>
+      <p class="btitle" id="btitle"></p>
+      <p class="bsub" id="bsub"></p>
+      <div class="floors" role="group" aria-label="Floor">
+        <button type="button" data-floor="all" aria-pressed="true">All</button>
+        <button type="button" data-floor="0" aria-pressed="false">1st</button>
+        <button type="button" data-floor="1" aria-pressed="false">2nd</button>
+        <button type="button" data-floor="2" aria-pressed="false">3rd</button>
+      </div>
+      <div id="card"></div>
+      <ul class="ulist" id="ulist"></ul>
+    </div>
+        <p class="note">Rents shown are current advertised rents and can change. Contact our team to confirm pricing.</p>
+      </div>
+    </aside>
+    <div class="of-map" id="omap">
+      <canvas id="scene" tabindex="0" aria-label="3D model of Overland Reserve. Use the list to choose buildings and apartments."></canvas>
+      <div id="labels" aria-hidden="true"></div>
+      <div id="tip" role="status"></div>
+      <div id="loading">Loading the community model</div>
+      <p class="hint" id="hint">Drag to turn the view, pinch or use the + and − buttons to zoom, then pick a building.</p>
+      <div id="ctrls">
+  <button type="button" class="cbtn" id="zin" title="Zoom in" aria-label="Zoom in"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 3v10M3 8h10"/></svg></button>
+  <button type="button" class="cbtn" id="zout" title="Zoom out" aria-label="Zoom out"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 8h10"/></svg></button>
+  <button type="button" class="cbtn" id="compass" title="North" aria-label="Compass, north"><svg viewBox="0 0 24 24"><path d="M12 2 16 12H8z" fill="#c4452f"/><path d="M12 22 8 12h8z" fill="currentColor" opacity=".5"/></svg></button>
+  <button type="button" class="cbtn" id="reset"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 8a5.5 5.5 0 1 0 1.6-3.9M2.5 2.5v3h3"/></svg><span class="lbl">Reset view</span></button>
+</div>
+      <div id="mcard" aria-live="polite"></div>
+      <div class="ztip" id="ztip" aria-hidden="true"></div>
+    </div>
+  </div>
+  <button type="button" class="of-pill" id="mtoggle"></button>
+  <div id="tour" class="tour" hidden role="dialog" aria-modal="true" aria-labelledby="tourTitle">
+  <div class="tour-box">
+    <div class="tour-head"><b id="tourTitle"></b><a id="tourOpen" href="#" target="_blank" rel="noopener">Open in a new tab</a><button type="button" class="tour-x" id="tourClose" aria-label="Close the tour">×</button></div>
+    <iframe id="tourFrame" title="Matterport 3D tour" allow="autoplay; fullscreen; web-share; xr-spatial-tracking" allowfullscreen></iframe>
+    <div id="tourFallback" class="tour-fb" hidden><p>This 3D tour opens in Matterport.</p><a id="tourFbLink" href="#" target="_blank" rel="noopener">Open the 3D tour</a></div>
+  </div>
+</div>
+  <div id="fpbox" class="fpbox" hidden role="dialog" aria-modal="true" aria-labelledby="fpTitle">
+    <div class="fpbox-in">
+      <div class="tour-head"><b id="fpTitle"></b><button type="button" class="tour-x" id="fpClose" aria-label="Close the floor plan">×</button></div>
+      <img id="fpImg" alt="">
+    </div>
+  </div>
