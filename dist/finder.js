@@ -100,6 +100,40 @@ return {x:hw+0.25,y:y,z:-u,ry:Math.PI/2};
 function ease(t){ return t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2; }
 function aptLine(a){ return (a.beds===0?'Studio':a.beds+' bed')+', '+a.baths+' bath'+(a.baths>1?'s':'')+', '+a.sf.toLocaleString('en-US')+' sq ft'; }
 var hw=W/2, hd=D/2;
+(function(){
+  var nodes = document.querySelectorAll('[data-or3d-unit]');
+  if (!nodes.length) return;
+  var MON = {jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12};
+  function pad(n){ return ('0'+n).slice(-2); }
+  function iso(v){
+    v = String(v||'').trim(); if (!v) return '';
+    var m = v.match(/^(\d{4})-(\d{2})-(\d{2})/); if (m) return m[1]+'-'+m[2]+'-'+m[3];
+    m = v.match(/^([A-Za-z]{3})[a-z]*\.?\s+(\d{1,2}),?\s+(\d{4})/); if (m && MON[m[1].toLowerCase()]) return m[3]+'-'+pad(MON[m[1].toLowerCase()])+'-'+pad(+m[2]);
+    m = v.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/); if (m) return m[3]+'-'+pad(+m[1])+'-'+pad(+m[2]);
+    var d = new Date(v); return isNaN(d) ? '' : d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+  }
+  function yes(v){ v = String(v||'').trim().toLowerCase(); return v==='true' || v==='1' || v==='yes'; }
+  function today(){ var d = new Date(); return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); }
+  var rows = {}; (window.DIR||[]).forEach(function(r){ rows[r[0]+'-'+r[1]] = r; });
+  var cms = {}, avail = {}, priced = {}, anyStatus = false, now = today();
+  [].forEach.call(nodes, function(n){
+    var id = String(n.getAttribute('data-or3d-unit')||'').trim(); if (!id) return;
+    var g = function(k){ return String(n.getAttribute('data-'+k)||'').trim(); };
+    var c = cms[id] = {hide: yes(g('hide')), apply: g('apply')};
+    var rent = g('rent');
+    if (rent !== '' && !isNaN(+rent.replace(/[$,]/g,'')) && rows[id]) rows[id][3] = +rent.replace(/[$,]/g,'');
+    var t = g('terms');
+    if (t) { try { var list = JSON.parse(t); if (Array.isArray(list) && list.length) priced[id] = {terms: list}; } catch(e) {} }
+    var s = g('status').toLowerCase(), d = iso(g('date'));
+    if (s) anyStatus = true;
+    if (s === 'available') avail[id] = d && d > now ? d : 'now';
+    else if (s === 'notice') { if (d) avail[id] = d; }
+    else if (s === 'occupied' || s === 'down') { avail[id] = 'off'; c.off = true; }
+  });
+  window.OR3D_CMS = cms;
+  if (Object.keys(priced).length) window.OR3D_PRICING = {units: priced};
+  if (anyStatus) window.OR3D_AVAIL = avail;
+})();
 try{
 (function(){
 function init(){
@@ -592,9 +626,9 @@ function AV(){return window.OR3D_AVAIL||null;}
 function iso(d){return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);}
 var TODAY=iso(new Date());S.moveBy='';
 function by(){var m=window.OR3D_MOVEIN;return S.moveBy||(m&&m.date?iso(m.date):'');}
-function avl(a){var m=AV();if(!m)return['tbd','Move-in date coming soon'];var v=m[a.id];if(!v)return['tbd','Contact us for availability'];if(v==='now'||v<=TODAY)return['now','Available now'];var d=new Date(v+'T00:00:00');return['date','Available '+d.toLocaleDateString('en-US',{month:'short',day:'numeric'})+(d.getFullYear()!==new Date().getFullYear()?', '+d.getFullYear():'')];}
+function avl(a){var m=AV();if(!m)return['tbd','Move-in date coming soon'];var v=m[a.id];if(!v)return['tbd','Contact us for availability'];if(v==='off')return['off','Leased'];if(v==='now'||v<=TODAY)return['now','Available now'];var d=new Date(v+'T00:00:00');return['date','Available '+d.toLocaleDateString('en-US',{month:'short',day:'numeric'})+(d.getFullYear()!==new Date().getFullYear()?', '+d.getFullYear():'')];}
 window.OR3D_ROWX=function(a){var l=avl(a);return '<span class="avl '+l[0]+'">'+CALI+l[1]+'</span>';};
-window.OR3D_MATCH=function(a){var b=by(),m=AV();if(!b||!m)return true;var v=m[a.id];return !!v&&(v==='now'||v<=b);};
+window.OR3D_MATCH=function(a){var b=by(),m=AV();if(m&&m[a.id]==='off')return false;if(!b||!m)return true;var v=m[a.id];return !!v&&(v==='now'||v<=b);};
 window.OR3D_FILTERING=function(){return !!by()&&!!AV();};
 var ff=document.getElementById('floorf'),mvl=null,mv=null;
 if(ff&&ff.closest('label')){mvl=document.createElement('label');mvl.className='mvl';mvl.innerHTML='Move in by<input type="date" id="moveby" min="'+TODAY+'"><small>Live availability coming soon</small>';ff.closest('label').after(mvl);mv=mvl.querySelector('input');}
@@ -763,6 +797,7 @@ var winFrames=[],winGlass=[];function makeBuilding(b){var g=new THREE.Group;g.po
 ;var isApt=!!s.p,h=isApt?FH-1.6:FH-3.2;var m=new THREE.Mesh(BOX,new THREE.MeshStandardMaterial({color:lin(isApt?bedColor(PLANS[s.p].beds):spaceName(s.a)?SPACE_COLOR:"#b9bdc2"),roughness:.7,transparent:true,opacity:1}));m.scale.set(w-.9,h,d-.9);m.position.set(cx,.6+h/2,cz);m.castShadow=true;fg.add(m)
 ;var edge=new THREE.LineSegments(new THREE.EdgesGeometry(BOX),new THREE.LineBasicMaterial({color:16777215,transparent:true,opacity:.7}));edge.scale.copy(m.scale);edge.position.copy(m.position);fg.add(edge);var rec={b:b,floor:fi,mesh:m,edge:edge,cx:cx,cz:cz,h:h};if(isApt){
 var p=PLANS[s.p],unit=fi+1+s.u,row=DIRMAP[b.num+"-"+unit];Object.assign(rec,{plan:p,pkey:s.p,unit:unit,id:b.num+"-"+unit,title:row?row[2]:"",rent:row?row[3]:0,sf:row?row[4]:p.sf,beds:row?row[5]:p.beds,baths:row?row[6]:p.baths,ada:row?!!row[7]:!!p.ada})
+;var cm=(window.OR3D_CMS||{})[rec.id];if(cm){rec.hide=!!cm.hide;rec.off=!!cm.off;rec.apply=cm.apply||""}
 ;rec.nice=shortTitle(rec.title)||(p.beds===0?"Studio":p.beds+" Bed "+p.baths+" Bath");m.userData.apt=rec;b.apts.push(rec)}else{rec.label=s.a;rec.nm=spaceName(s.a);if(rec.nm)m.userData.space=rec;b.spaces.push(rec)}})});return g}BLDGS.forEach(makeBuilding)
 ;var frameIM=new THREE.InstancedMesh(BOX,M.frame,winFrames.length),glassIM=new THREE.InstancedMesh(BOX,M.glass,winGlass.length);frameIM.castShadow=true;function placeWindows(){var tmp=new THREE.Object3D;[[winFrames,frameIM],[winGlass,glassIM]].forEach(function(pair){pair[0].forEach(function(w,i){
 var hidden=w.b.shellHidden;tmp.position.set(w.x,w.y,w.z);tmp.rotation.set(0,w.ry,0);tmp.scale.set(hidden?1e-4:w.w,hidden?1e-4:w.h,w.d);tmp.updateMatrix();tmp.matrix.premultiply(w.b.group.matrixWorld);pair[1].setMatrixAt(i,tmp.matrix)});pair[1].instanceMatrix.needsUpdate=true})}
@@ -771,7 +806,7 @@ scene.updateMatrixWorld(true);placeWindows();scene.add(frameIM);scene.add(glassI
 ;var MAPEL=document.getElementById("omap"),ROOTEL=document.getElementById("or3d");function VW(){return MAPEL.clientWidth||1}function VH(){return MAPEL.clientHeight||1}function RR(){return MAPEL.getBoundingClientRect()}function isMobile(){return matchMedia("(max-width:767px)").matches}var state={
 beds:"all",ada:false,maxRent:0,plan:"",sqft:"",floorF:"",bldg:null,floor:"all",sel:null,hover:null,hoverB:null,view:"a",stay:false,q:"",bedsS:[],bathsS:[],priceS:[]};function inSqft(a){if(!state.sqft)return true;var r=state.sqft.split("-");return a.sf>=+r[0]&&a.sf<+r[1]}function inPrice(a){
 return!state.priceS.length||state.priceS.some(function(k){var r=k.split("-");return a.rent>=+r[0]&&a.rent<=+r[1]})}function matches(a){
-return(state.beds==="all"||a.beds===state.beds)&&(!state.bedsS.length||state.bedsS.indexOf(a.beds)>-1)&&(!state.bathsS.length||state.bathsS.indexOf(a.baths)>-1)&&inPrice(a)&&(!state.ada||a.ada)&&(!state.maxRent||a.rent<=state.maxRent)&&(!state.plan||a.nice===state.plan)&&inSqft(a)&&(state.floorF===""||a.floor===+state.floorF)&&(!window.OR3D_MATCH||window.OR3D_MATCH(a))
+return!a.hide&&(state.beds==="all"||a.beds===state.beds)&&(!state.bedsS.length||state.bedsS.indexOf(a.beds)>-1)&&(!state.bathsS.length||state.bathsS.indexOf(a.baths)>-1)&&inPrice(a)&&(!state.ada||a.ada)&&(!state.maxRent||a.rent<=state.maxRent)&&(!state.plan||a.nice===state.plan)&&inSqft(a)&&(state.floorF===""||a.floor===+state.floorF)&&(!window.OR3D_MATCH||window.OR3D_MATCH(a)))
 }function filtering(){return state.bedsS.length>0||state.bathsS.length>0||state.priceS.length>0||state.beds!=="all"||state.ada||!!state.maxRent||!!state.plan||!!state.sqft||state.floorF!==""||!!(window.OR3D_FILTERING&&window.OR3D_FILTERING())}var ALL=[];BLDGS.forEach(function(b){
 ALL=ALL.concat(b.apts)});setTimeout(function(){ALL.forEach(function(a){BYID[a.id]=a})},0);function apply(){var f=filtering();BLDGS.forEach(function(b){var focused=state.bldg===b;var showUnits=focused||f;var hideShell=showUnits;if(!!b.shellHidden!==hideShell){b.shellHidden=hideShell
 ;b.windowsDirty=true}b.shell.visible=!hideShell;b.units.visible=showUnits;b.ghost.visible=b.ghostEdge.visible=f&&!focused;b.gapTarget=focused?13:0;b.floorGroups.forEach(function(fg,fi){var floorOn=!focused||state.floor==="all"||state.floor===fi
@@ -782,7 +817,7 @@ ALL=ALL.concat(b.apts)});setTimeout(function(){ALL.forEach(function(a){BYID[a.id
 ;function mixBar(apts){var n=apts.length||1;return'<span class="mix">'+BEDS.map(function(x){var c=apts.filter(function(a){return a.beds===x.k}).length;return c?'<i style="width:'+c/n*100+"%;background:"+x.color+'"></i>':""}).join("")+"</span>"}function meta(a,o){o=o||{}
 ;return'<span class="meta">'+(o.bldg?'<span title="Building">'+IC.bldg+(o.full?a.b.name:a.b.num)+"</span>":"")+'<span title="Apartment number">'+IC.unit+a.unit+"</span>"+(o.floor?'<span title="Floor">'+IC.floor+ORD[a.floor]+" floor</span>":"")+(o.noArea?"":'<span title="Size">'+IC.area+a.sf.toLocaleString("en-US")+" sq ft</span>")+(a.ada?'<span class="acc">'+IC.acc+"Accessible</span>":"")+"</span>"
 }function unitLine(a,withBldg){return meta(a,{bldg:withBldg,floor:withBldg})}function cardHTML(a){return'<div class="card"><div class="c-top"><h3>'+a.nice+'</h3><div class="c-rent"><b>'+money(a.rent)+"</b></div></div>"+meta(a,{bldg:true,floor:true
-})+(window.OR3D_ROWX?window.OR3D_ROWX(a,1):"")+'<div class="c-plan">'+fpBig(a)+(TOURS[a.beds]?'<button type="button" class="c-3d" data-tour="'+a.beds+'">'+IC.tour+"3D tour</button>":"")+"</div>"+'<div class="cta"><button type="button" class="sched" data-schedule="'+a.id+'" data-label="'+a.b.num+" #"+a.unit+" ("+a.nice+')">Schedule a tour</button><a class="pri" href="#apply">Apply now</a></div>'+'<div class="cta see3d"><button type="button" data-see3d="1">See it on the 3D map</button></div></div>'
+})+(window.OR3D_ROWX?window.OR3D_ROWX(a,1):"")+'<div class="c-plan">'+fpBig(a)+(TOURS[a.beds]?'<button type="button" class="c-3d" data-tour="'+a.beds+'">'+IC.tour+"3D tour</button>":"")+"</div>"+(a.off?'<div class="cta off"><p>Not available right now. Ask us about similar apartments.</p></div>':'<div class="cta"><button type="button" class="sched" data-schedule="'+a.id+'" data-label="'+a.b.num+" #"+a.unit+" ("+a.nice+')">Schedule a tour</button><a class="pri" href="'+(a.apply||"#apply")+'">Apply now</a></div>')+'<div class="cta see3d"><button type="button" data-see3d="1">See it on the 3D map</button></div></div>'
 }function aptRow(a,withBldg){
 return"<li"+(state.sel===a?' class="open"':"")+'><button type="button" class="urow'+(matches(a)?"":" dim")+(state.hover===a?" hot":"")+'" data-id="'+a.id+'" aria-current="'+(state.sel===a)+'"><span class="fpt">'+fpThumb(a)+'<span class="sw" style="background:'+bedColor(a.beds)+'"></span></span><span><span class="t">'+a.nice+(TOURS[a.beds]?'<span class="b3d" title="3D tour available">'+IC.tour+"3D</span>":"")+"</span>"+unitLine(a,withBldg)+(window.OR3D_ROWX?window.OR3D_ROWX(a):"")+'</span><span class="rentv">'+money(a.rent)+"</span></button>"+(state.sel===a?cardHTML(a):"")+"</li>"
 }var BYID={};var ORD=["1st","2nd","3rd"];function renderPanel(){setTimeout(renderMini,0);var m=ALL.filter(matches).length;$("match").innerHTML=filtering()?"<b>"+m+"</b> of 94 apartments match":"<b>94</b> apartments from <b>"+money(Math.min.apply(0,ALL.map(function(a){

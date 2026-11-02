@@ -7,9 +7,9 @@ function AV(){return window.OR3D_AVAIL||null;}
 function iso(d){return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);}
 var TODAY=iso(new Date());S.moveBy='';
 function by(){var m=window.OR3D_MOVEIN;return S.moveBy||(m&&m.date?iso(m.date):'');}
-function avl(a){var m=AV();if(!m)return['tbd','Move-in date coming soon'];var v=m[a.id];if(!v)return['tbd','Contact us for availability'];if(v==='now'||v<=TODAY)return['now','Available now'];var d=new Date(v+'T00:00:00');return['date','Available '+d.toLocaleDateString('en-US',{month:'short',day:'numeric'})+(d.getFullYear()!==new Date().getFullYear()?', '+d.getFullYear():'')];}
+function avl(a){var m=AV();if(!m)return['tbd','Move-in date coming soon'];var v=m[a.id];if(!v)return['tbd','Contact us for availability'];if(v==='off')return['off','Leased'];if(v==='now'||v<=TODAY)return['now','Available now'];var d=new Date(v+'T00:00:00');return['date','Available '+d.toLocaleDateString('en-US',{month:'short',day:'numeric'})+(d.getFullYear()!==new Date().getFullYear()?', '+d.getFullYear():'')];}
 window.OR3D_ROWX=function(a){var l=avl(a);return '<span class="avl '+l[0]+'">'+CALI+l[1]+'</span>';};
-window.OR3D_MATCH=function(a){var b=by(),m=AV();if(!b||!m)return true;var v=m[a.id];return !!v&&(v==='now'||v<=b);};
+window.OR3D_MATCH=function(a){var b=by(),m=AV();if(m&&m[a.id]==='off')return false;if(!b||!m)return true;var v=m[a.id];return !!v&&(v==='now'||v<=b);};
 window.OR3D_FILTERING=function(){return !!by()&&!!AV();};
 var ff=document.getElementById('floorf'),mvl=null,mv=null;
 if(ff&&ff.closest('label')){mvl=document.createElement('label');mvl.className='mvl';mvl.innerHTML='Move in by<input type="date" id="moveby" min="'+TODAY+'"><small>Live availability coming soon</small>';ff.closest('label').after(mvl);mv=mvl.querySelector('input');}
