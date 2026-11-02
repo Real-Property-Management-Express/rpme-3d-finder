@@ -16,7 +16,7 @@ def read(name):
 
 def strip_css(s):
     s = re.sub(r'/\*.*?\*/', '', s, flags=re.S)
-    return '\n'.join(l.rstrip() for l in s.splitlines() if l.strip())
+    return '\n'.join(l.strip() for l in s.splitlines() if l.strip())
 
 
 def strip_js(s):
