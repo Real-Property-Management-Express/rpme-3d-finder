@@ -514,3 +514,15 @@ html.or3d-locked #or3d{min-height:0}
   #or3d #loading:after{animation:none}
 }
 
+/* list panel top */
+#or3d #campusView .ptour-panel{display:none}
+#or3d #aview .or3d-gt.lk-feesline{margin-top:-4px}
+#or3d #campusView .ctabs{margin-top:10px}
+#or3d #aview .or3d-gt{justify-content:flex-start;flex-wrap:wrap;gap:4px 6px;margin:10px 2px 8px;padding:0;border:0;background:none}
+#or3d #aview .or3d-gt span{font:500 13px/1.4 var(--f);color:var(--muted)}
+#or3d #aview .or3d-gt button{height:auto;padding:0;border-radius:0;background:none;color:var(--navy);font:700 13px/1.4 var(--f);text-decoration:underline;text-underline-offset:3px}
+#or3d #aview .or3d-gt button:hover{background:none;color:var(--hl-dk)}
+#or3d .of-lhead{gap:6px}
+#or3d .of-lhead .legend.lk-leg{gap:2px 10px;font-size:12px;line-height:1.5}
+#or3d .of-lhead .legend.lk-leg li{gap:5px;white-space:nowrap}
+#or3d .of-lhead .legend.lk-leg .sw{width:9px;height:9px;border-radius:50%}

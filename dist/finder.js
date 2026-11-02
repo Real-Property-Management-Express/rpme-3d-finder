@@ -121,7 +121,6 @@ function W(p){return{x:(p[0]-C0[0])/K,z:(p[1]-C0[1])/K};}
 function scanId(name){for(var i=0;i<AM.length;i++)if(AM[i].name===name)return AM[i].id;return '';}
 var ICON='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="m10 8.5 5 3.5-5 3.5z"/></svg>',LBL=cfg.label||'Take the property tour';
 var mb=document.createElement('button');mb.type='button';mb.className='ptour-go ptour-map';mb.setAttribute('aria-label',LBL);mb.innerHTML=ICON+'<span class="pl">'+esc(LBL)+'</span><span class="ps">'+esc(cfg.short||'Tour')+'</span>';map.appendChild(mb);
-var cv=$('campusView');if(cv){var pb=document.createElement('button');pb.type='button';pb.className='ptour-go ptour-panel';pb.innerHTML=ICON+'<span>'+esc(LBL)+'</span>';cv.insertBefore(pb,cv.firstChild);pb.addEventListener('click',function(){start();});}
 mb.addEventListener('click',function(){start();});
 var card=document.createElement('div');card.className='ptour-card';card.hidden=true;card.setAttribute('role','region');card.setAttribute('aria-label','Property tour');card.setAttribute('aria-live','polite');map.appendChild(card);
 var P='<svg viewBox="0 0 16 16" aria-hidden="true">',IC={prev:P+'<path d="M10 3 5 8l5 5"/></svg>',next:P+'<path d="m6 3 5 5-5 5"/></svg>',pause:P+'<path d="M5.5 3v10M10.5 3v10"/></svg>',play:P+'<path d="M5 3v10l8-5z"/></svg>'};
@@ -425,18 +424,6 @@ if(moved||sc!==S||performance.now()<until){last.copy(cam.matrixWorld);lastP.copy
 setInterval(function(){kick(40);},1000);
 kick(1500);}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
-var pTries=0;
-function panel(){var cv=document.getElementById('campusView'),mt=document.getElementById('match'),lg=document.getElementById('legend');
-if((!cv||!mt||!lg)&&pTries++<100)return setTimeout(panel,120);if(!cv||cv._lk)return;cv._lk=1;
-if(!document.getElementById('lkp-css')){var st=document.createElement('style');st.id='lkp-css';st.textContent='#or3d #campusView .ptour-panel{display:none}#or3d #aview .or3d-gt.lk-feesline{margin-top:-4px}#or3d #campusView .ctabs{margin-top:10px}#or3d #aview .or3d-gt{justify-content:flex-start;flex-wrap:wrap;gap:4px 6px;margin:10px 2px 8px;padding:0;border:0;background:none}#or3d #aview .or3d-gt span{font:500 13px/1.4 var(--f);color:var(--muted)}#or3d #aview .or3d-gt button{height:auto;padding:0;border-radius:0;background:none;color:var(--navy);font:700 13px/1.4 var(--f);text-decoration:underline;text-underline-offset:3px}#or3d #aview .or3d-gt button:hover{background:none;color:var(--hl-dk)}#or3d .of-lhead{gap:6px}#or3d .of-lhead .legend.lk-leg{gap:2px 10px;font-size:12px;line-height:1.5}#or3d .of-lhead .legend.lk-leg li{gap:5px;white-space:nowrap}#or3d .of-lhead .legend.lk-leg .sw{width:9px;height:9px;border-radius:50%}';document.head.appendChild(st);}
-lg.classList.add('lk-leg');
-function short(){var m=mt.innerHTML.match(/^<b>(\d+)<\/b> apartments in <b>\d+<\/b> [^,]*buildings, from (.+)$/);if(m)mt.innerHTML='<b>'+m[1]+'</b> apartments from <b>'+m[2]+'</b>';}
-short();new MutationObserver(short).observe(mt,{childList:true});
-var gTries=0;
-function place(){var gt=document.querySelector('#aview .or3d-gt:not(.lk-feesline)');if(!gt){if(gTries++<60)setTimeout(place,150);return;}if(document.querySelector('.lk-feesline'))return;
-var ln=document.createElement('div');ln.className='or3d-gt lk-feesline';ln.innerHTML='<span>Wondering about fees?</span><button type="button" class="lk-fees" data-t2-fees>See all fees</button>';gt.insertAdjacentElement('afterend',ln);}
-place();}
-panel();
 })();
 }catch(e){console.error(e);}
 try{

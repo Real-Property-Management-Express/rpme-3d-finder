@@ -28,7 +28,6 @@ function scanId(name){for(var i=0;i<AM.length;i++)if(AM[i].name===name)return AM
 /* buttons (on phones the map button shortens to cfg.short, default 'Tour', so it clears the zoom controls) */
 var ICON='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="m10 8.5 5 3.5-5 3.5z"/></svg>',LBL=cfg.label||'Take the property tour';
 var mb=document.createElement('button');mb.type='button';mb.className='ptour-go ptour-map';mb.setAttribute('aria-label',LBL);mb.innerHTML=ICON+'<span class="pl">'+esc(LBL)+'</span><span class="ps">'+esc(cfg.short||'Tour')+'</span>';map.appendChild(mb);
-var cv=$('campusView');if(cv){var pb=document.createElement('button');pb.type='button';pb.className='ptour-go ptour-panel';pb.innerHTML=ICON+'<span>'+esc(LBL)+'</span>';cv.insertBefore(pb,cv.firstChild);pb.addEventListener('click',function(){start();});}
 mb.addEventListener('click',function(){start();});
 
 /* card */
