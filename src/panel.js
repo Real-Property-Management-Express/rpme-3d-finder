@@ -32,14 +32,15 @@ root.style.setProperty('--or3d-h',Math.max(360,window.innerHeight-top)+'px');
 var sched=null,schedLast=null;
 function closeSched(){if(sched&&!sched.hidden){sched.hidden=true;if(schedLast&&schedLast.focus)schedLast.focus();}}
 function openSched(label){
-var f=q('#floor-plans-3d .form-div .w-form')||(sched&&sched.querySelector('.w-form'));
+var f=q('#floor-plans-3d .form-div .w-form')||(sched&&sched.querySelector('.w-form'))||q('.t2-tourform .w-form')||q('.form-div .w-form');
 if(!f){location.href='/contact';return;}
 if(!sched){sched=document.createElement('div');sched.className='or3d-sched';sched.hidden=true;sched.setAttribute('role','dialog');sched.setAttribute('aria-modal','true');sched.setAttribute('aria-labelledby','or3dSchedT');
 sched.innerHTML='<div class="sb"><div class="sh"><b id="or3dSchedT">Schedule a tour</b><button type="button" class="sx" aria-label="Close">\u00d7</button></div><p class="ss"></p><div class="sf"></div></div>';
 document.body.appendChild(sched);sched.addEventListener('click',function(e){if(e.target===sched||e.target.closest('.sx'))closeSched();});}
 var wrap=sched.querySelector('.sf');if(f.parentNode!==wrap)wrap.appendChild(f);
-sched.querySelector('.ss').textContent='Apartment '+label+'. Share your contact info and our team will reach out to set up a time.';
-var msg=f.querySelector('#Message,[name="Message"]');if(msg)msg.value="I'd like to schedule a tour of apartment "+label+'.';
+sched.querySelector('.ss').textContent=(label?'Apartment '+label+'. ':'')+'Share your contact info and our team will reach out to set up a time.';
+var msg=f.querySelector('#Message,[name="Message"]');if(msg)msg.value=label?"I'd like to schedule a tour of apartment "+label+'.':'';
+var fm=f.querySelector('form')||f;if(!fm.querySelector('input[name="Tour Request"]')){var th=document.createElement('input');th.type='hidden';th.name='Tour Request';th.value="I'd like to schedule a tour.";fm.appendChild(th);}
 schedLast=document.activeElement;sched.hidden=false;var first=f.querySelector('input:not([type=hidden]):not([type=submit])');if(first)first.focus();
 }
 document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-schedule]');if(b){e.preventDefault();openSched(b.getAttribute('data-label')||'');}});
