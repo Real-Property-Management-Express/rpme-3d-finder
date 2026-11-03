@@ -369,7 +369,7 @@ var shadM=new T.MeshBasicMaterial({color:0x000000,transparent:true,opacity:.38,d
 var groups=[[],[]];
 var mtx=new T.Matrix4(),p=new T.Vector3(),q=new T.Quaternion(),sc=new T.Vector3(),flip=new T.Quaternion().setFromAxisAngle(new T.Vector3(0,1,0),Math.PI);
 for(var i=0;i<body.count;i++){body.getMatrixAt(i,mtx);mtx.decompose(p,q,sc);var qq=q.clone();if(rnd()<.35)qq.multiply(flip);
-groups[rnd()<.55?1:0].push({p:new T.Vector3(p.x,GROUND,p.z),q:qq,c:paint()});}
+groups[rnd()<.55?1:0].push({p:new T.Vector3(p.x,p.y-1.25,p.z),q:qq,c:paint()});}
 CARS.forEach(function(d,ti){var list=groups[ti];if(!list.length)return;
 var R=d.roof,hw=d.w/2-.45;
 var gPaint=merge([{g:prof(d.body,d.w,.45)},{g:box(R[0],.16,R[1],0,R[3]+.04,R[2])}]);
@@ -401,7 +401,7 @@ var trunkM=new T.MeshStandardMaterial({color:lin('#4a3b30'),roughness:.95});
 var trunkG=new T.CylinderGeometry(.45,.75,10,7);
 var n=crown.count,spots=[],m4=new T.Matrix4(),pp=new T.Vector3(),qq2=new T.Quaternion(),ss=new T.Vector3();
 for(var i=0;i<n;i++){crown.getMatrixAt(i,m4);m4.decompose(pp,qq2,ss);spots.push({x:pp.x,z:pp.z,s:ss.x/9});}
-var dec=[],con=[];spots.forEach(function(t){(rnd()<.2?con:dec).push(t);});
+var dec=[],con=[];var noCon=(window.OR3D_PACK||{}).noConifers;spots.forEach(function(t){(rnd()<(noCon?0:.2)?con:dec).push(t);});
 var GR=['#4d6b35','#5a7a3a','#3f5e33','#6b8540','#57703f','#7a8a45'],GC=['#2f4a32','#36523a','#2b4430'];
 var dIM=new T.InstancedMesh(decid,leafM,dec.length),cIM=new T.InstancedMesh(conG,leafM,con.length),tIM=new T.InstancedMesh(trunkG,trunkM,spots.length);
 [dIM,cIM,tIM].forEach(function(im){im.castShadow=true;im.receiveShadow=true;S.add(im);});
@@ -431,7 +431,7 @@ function scatter(geo,mat,list,cols,sy,yk){if(!list.length)return;var im=new T.In
 list.forEach(function(s,j){o5.position.set(s.x,yk*s.s,s.z);o5.rotation.set(0,rnd()*6.28,0);o5.scale.set(1.5*s.s,sy*s.s,1.5*s.s);o5.updateMatrix();im.setMatrixAt(j,o5.matrix);im.setColorAt(j,lin(cols[rnd()*cols.length|0]));});S.add(im);}
 scatter(shrubG,shrubM,shrubs,['#3f5a32','#4c6a36','#6a4a35','#55703c'],1.1,1.1);
 scatter(gr,shrubM,grass,['#a9a56e','#9c9b66','#b6ad7c'],.75,.55);}
-if(O.BLDGS&&O.BLDGS.length){
+if(O.BLDGS&&O.BLDGS.length&&!(window.OR3D_PACK||{}).noEntry){
 var ehd=62.5/2,ex=-8;
 var darkM=new T.MeshStandardMaterial({color:lin('#1b1c1e'),roughness:.45,metalness:.6});
 var soffM=new T.MeshStandardMaterial({color:lin('#f3ead8'),emissive:lin('#ffe2b0'),emissiveIntensity:.55,roughness:.6});

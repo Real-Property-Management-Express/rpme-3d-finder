@@ -19,6 +19,7 @@ PROPERTIES = {
             'Overland Reserve, Rochester, Minnesota': 'The Avery, Fargo, North Dakota',
             'like 6410-203': 'like 312',
             '3D model of Overland Reserve.': '3D model of The Avery.',
+            'Loading the community model': 'Loading the building model',
         },
     },
 }
