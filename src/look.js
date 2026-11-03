@@ -125,7 +125,7 @@ for(var i=0;i<n;i++){crown.getMatrixAt(i,m4);m4.decompose(pp,qq2,ss);spots.push(
 var dec=[],con=[];var noCon=(window.OR3D_PACK||{}).noConifers;spots.forEach(function(t){(rnd()<(noCon?0:.2)?con:dec).push(t);});
 var GR=['#4d6b35','#5a7a3a','#3f5e33','#6b8540','#57703f','#7a8a45'],GC=['#2f4a32','#36523a','#2b4430'];
 var dIM=new T.InstancedMesh(decid,leafM,dec.length),cIM=new T.InstancedMesh(conG,leafM,con.length),tIM=new T.InstancedMesh(trunkG,trunkM,spots.length);
-[dIM,cIM,tIM].forEach(function(im){im.castShadow=true;im.receiveShadow=true;S.add(im);});
+[dIM,cIM,tIM].forEach(function(im){if(!im.count)return;im.castShadow=true;im.receiveShadow=true;S.add(im);});
 var o4=new T.Object3D(),ti2=0;
 dec.forEach(function(t,j){var s=t.s*(0.85+rnd()*.35),h=1+rnd()*.25;o4.rotation.set(0,rnd()*6.28,0);o4.position.set(t.x,(10+7.5)*s,t.z);o4.scale.set(8.5*s,8.0*s*h,8.5*s);o4.updateMatrix();dIM.setMatrixAt(j,o4.matrix);dIM.setColorAt(j,lin(GR[rnd()*GR.length|0]));
 o4.rotation.set(0,0,0);o4.position.set(t.x,5*s,t.z);o4.scale.set(s,s,s);o4.updateMatrix();tIM.setMatrixAt(ti2++,o4.matrix);});
