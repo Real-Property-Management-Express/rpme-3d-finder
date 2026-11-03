@@ -437,6 +437,7 @@ html.or3d-locked #or3d{min-height:0}
 #or3d li.open>.card>.c-top,#or3d li.open>.card>.meta,#or3d li.open>.card>.avl{display:none}
 #or3d .splabel{position:absolute;transform:translate(-50%,-100%);pointer-events:auto;cursor:pointer;border:0;margin:0;padding:6px 11px;border-radius:999px;background:#f6ecdf;color:#8a5b30;font:700 12.5px/1 var(--f);white-space:nowrap;box-shadow:0 4px 12px rgba(0,30,60,.18)}
 #or3d .splabel:hover,#or3d .splabel:focus-visible{background:#8a5b30;color:#fff}
+#or3d .splabel.ptour-tag{pointer-events:none;cursor:default}
 #or3d li.open>.card>.c-plan{margin-top:8px}
 #or3d .or3d-badge{position:absolute;z-index:4;left:12px;bottom:14px;align-items:center;padding:10px 14px;background:var(--navy,#003566);border-radius:6px;box-shadow:0 8px 20px rgba(0,22,44,.3);pointer-events:none}
 #or3d .or3d-badge img{display:block;height:34px;width:auto;max-width:none}
