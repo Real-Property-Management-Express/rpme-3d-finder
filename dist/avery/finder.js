@@ -123,12 +123,12 @@ PUL:{name:'Pullman', title:'Pullman',    beds:3, baths:2, sf:1287}
 var TOURS = {};
 var AVE_W = 268, AVE_D = 249, AVE_FH = 10.67, AVE_LIFT = 16;
 var AVE_STACKS = {
-'01':['MIL',[1,21,29,45]],  '03':['GIL',[29,21,56,45]],  '05':['GIL',[56,21,77,45]],  '07':['FRE',[77,21,99,45]],  '09':['CLA',[99,21,118,45]],
-'11':['CLA',[118,8,140,38]],'12':['DAK',[140,7,167,37]], '13':['BIL',[167,6,187,36]], '14':['BIL',[187,6,201,36]], '15':['BIL',[201,5,216,35]], '16':['BIL',[216,5,236,35]], '17':['FRO',[236,4,267,40]],
-'02':['HOR',[1,52,33,78]],  '04':['TIM',[33,52,57,78]],  '06':['THO',[57,52,82,78]],  '08':['TIM',[82,52,101,78]], '10':['BAL',[101,52,117,78]],
-'18':['THO',[113,80,133,100]],'19':['TIM',[113,100,133,120]],'20':['THO',[113,120,133,141]],'21':['THO',[113,141,133,162]],'22':['THO',[113,162,133,182]],
-'34':['HAR',[1,185,33,213]],'32':['TIM',[33,185,54,213]],'30':['TIM',[54,185,70,213]],'28':['TIM',[70,185,86,213]],'26':['TIM',[86,185,102,213]],'24':['OAK',[102,185,120,213]],
-'33':['RIV',[1,219,24,249]],'31':['THO',[24,219,47,249]],'29':['TIM',[47,219,68,249]],'27':['PUL',[79,219,113,249]],'25':['TIM',[113,219,133,249]],'23':['TIM',[133,219,146,249]]
+'01':['MIL',[1,21,29,45],'C-1'],  '03':['GIL',[29,21,56,45],'B-3'],  '05':['GIL',[56,21,77,45],'B-3'],  '07':['FRE',[77,21,99,45],'A-2'],  '09':['CLA',[99,21,118,45],'B-5'],
+'11':['CLA',[118,8,140,38],'B-4'],'12':['DAK',[140,7,167,37],'C-3'], '13':['BIL',[167,6,187,36],'A-3a'], '14':['BIL',[187,6,201,36],'A-3b'], '15':['BIL',[201,5,216,35],'A-3c'], '16':['BIL',[216,5,236,35],'A-3d'], '17':['FRO',[236,4,267,40],'D-2'],
+'02':['HOR',[1,52,33,78],'C-2'],  '04':['TIM',[33,52,57,78],'A-1'],  '06':['THO',[57,52,82,78],'B-1'],  '08':['TIM',[82,52,101,78],'A-1'], '10':['BAL',[101,52,117,78],'B-7'],
+'18':['THO',[113,80,133,100],'B-1'],'19':['TIM',[113,100,133,120],'A-1'],'20':['THO',[113,120,133,141],'B-1'],'21':['THO',[113,141,133,162],'B-1'],'22':['THO',[113,162,133,182],'B-1'],
+'34':['HAR',[1,185,33,213],'B-6'],'32':['TIM',[33,185,54,213],'A-1'],'30':['TIM',[54,185,70,213],'A-1'],'28':['TIM',[70,185,86,213],'A-1'],'26':['TIM',[86,185,102,213],'A-1'],'24':['OAK',[102,185,120,213],'B-2'],
+'33':['RIV',[1,219,24,249],'C-4'],'31':['THO',[24,219,47,249],'B-1'],'29':['TIM',[47,219,68,249],'A-1'],'27':['PUL',[79,219,113,249],'D-1'],'25':['TIM',[113,219,133,249],'A-1'],'23':['TIM',[133,219,146,249],'A-1']
 };
 var AVE_HALLS = [[1,45,118,52],[118,38,267,45],[133,80,146,182],[1,213,120,219],[68,219,79,249],[120,185,146,219]];
 var AVE_ADA = {'2-24':'OAKA','4-32':'TIMA','6-12':'DAKA'};
@@ -140,7 +140,7 @@ function aveFloor(level){
   var cells=[];
   Object.keys(AVE_STACKS).sort().forEach(function(k){
     if(level===2&&(k==='08'||k==='10'))return;
-    cells.push({p:AVE_ADA[level+'-'+k]||AVE_STACKS[k][0],u:k,r:'u'+k});
+    cells.push({p:AVE_ADA[level+'-'+k]||AVE_STACKS[k][0],u:k,r:'u'+k,fp:AVE_STACKS[k][2]});
   });
   if(level===2){ cells.push({a:'Clubroom',r:'club'}); cells.push({a:'Fitness and yoga room',r:'fit'}); }
   AVE_HALLS.forEach(function(r,i){ cells.push({a:'Stairs and hallway',r:'h'+i}); });
@@ -872,7 +872,7 @@ var winFrames=[],winGlass=[];function makeBuilding(b){var T=TYPES[b.type];return
 ;TYPES[b.type].floors.forEach(function(fl,fi){var fg=new THREE.Group;units.add(fg);b.floorGroups.push(fg);if(b.lift)fg.position.y=fi*FH+b.lift;var slab=part(fg,M.concrete,W,.6,D,0,.3,0,false);slab.material=M.concrete;fl.forEach(function(s){var r=RECT[s.r],w=r[2]-r[0],d=r[3]-r[1],cx=(r[0]+r[2])/2-hw,cz=(r[1]+r[3])/2-hd
 ;var isApt=!!s.p,h=isApt?FH-1.6:FH-3.2;var m=new THREE.Mesh(BOX,new THREE.MeshStandardMaterial({color:lin(isApt?bedColor(PLANS[s.p].beds):spaceName(s.a)?SPACE_COLOR:"#b9bdc2"),roughness:.7,transparent:true,opacity:1}));m.scale.set(w-.9,h,d-.9);m.position.set(cx,.6+h/2,cz);m.castShadow=true;fg.add(m)
 ;var edge=new THREE.LineSegments(new THREE.EdgesGeometry(BOX),new THREE.LineBasicMaterial({color:16777215,transparent:true,opacity:.7}));edge.scale.copy(m.scale);edge.position.copy(m.position);fg.add(edge);var rec={b:b,floor:fi,mesh:m,edge:edge,cx:cx,cz:cz,h:h};if(isApt){
-var p=PLANS[s.p],unit=fi+BASE+s.u,row=DIRMAP[b.num+"-"+unit];Object.assign(rec,{plan:p,pkey:s.p,unit:unit,id:b.num+"-"+unit,title:row?row[2]:"",rent:row?row[3]:0,sf:row?row[4]:p.sf,beds:row?row[5]:p.beds,baths:row?row[6]:p.baths,ada:row?!!row[7]:!!p.ada})
+var p=PLANS[s.p],unit=fi+BASE+s.u,row=DIRMAP[b.num+"-"+unit];Object.assign(rec,{plan:p,pkey:s.p,fpk:s.fp||"",unit:unit,id:b.num+"-"+unit,title:row?row[2]:"",rent:row?row[3]:0,sf:row?row[4]:p.sf,beds:row?row[5]:p.beds,baths:row?row[6]:p.baths,ada:row?!!row[7]:!!p.ada})
 ;var cm=(window.OR3D_CMS||{})[rec.id];if(cm){rec.hide=!!cm.hide;rec.off=!!cm.off;rec.apply=cm.apply||"";rec.special=cm.special||""}
 ;rec.nice=shortTitle(rec.title)||p.title||(p.beds===0?"Studio":p.beds+" Bed "+p.baths+" Bath");m.userData.apt=rec;b.apts.push(rec)}else{rec.label=s.a;rec.nm=spaceName(s.a);if(rec.nm)m.userData.space=rec;b.spaces.push(rec)}})});return g}BLDGS.forEach(makeBuilding)
 ;var frameIM=new THREE.InstancedMesh(BOX,M.frame,winFrames.length),glassIM=new THREE.InstancedMesh(BOX,M.glass,winGlass.length);frameIM.castShadow=true;function placeWindows(){var tmp=new THREE.Object3D;[[winFrames,frameIM],[winGlass,glassIM]].forEach(function(pair){pair[0].forEach(function(w,i){
@@ -967,7 +967,7 @@ if(e.pointerType!=="mouse")return;var h=down?null:pickAt(e.clientX,e.clientY);va
 tip.style.display="block";tip.innerHTML="<b>"+b.name+"</b><br>"+TYPES[b.type].label;tip.style.left=Math.min(e.clientX-RR().left+14,VW()-250)+"px";tip.style.top=e.clientY-RR().top+14+"px"}else tip.style.display="none"});canvas.addEventListener("pointerleave",function(){tip.style.display="none"})
 ;canvas.addEventListener("pointerdown",function(e){down={x:e.clientX,y:e.clientY};hideHint()});canvas.addEventListener("pointerup",function(e){if(!down)return;var moved=Math.hypot(e.clientX-down.x,e.clientY-down.y);down=null;if(moved>6)return;var h=pickAt(e.clientX,e.clientY)
 ;if(h&&h.apt)selectApt(h.apt);else if(h&&h.bldg)focusBuilding(h.bldg)});canvas.addEventListener("keydown",function(e){if(e.key==="Escape"){if(state.bldg)overview()}});document.addEventListener("keydown",function(e){if(e.key==="Escape"&&state.bldg&&document.activeElement!==canvas)overview()})
-;var FLOORPLANS=window.OR3D_FP||{};function fpUrl(a){return FLOORPLANS[a.pkey]||""}function fpThumb(a){var u=fpUrl(a);return u?'<img src="'+u+'" alt="" loading="lazy">':'<span class="fp-ph">'+FP_SVG+"</span>"}function fpBig(a){var u=fpUrl(a)
+;var FLOORPLANS=window.OR3D_FP||{};function fpUrl(a){return FLOORPLANS[a.fpk]||FLOORPLANS[a.pkey]||""}function fpThumb(a){var u=fpUrl(a);return u?'<img src="'+u+'" alt="" loading="lazy">':'<span class="fp-ph">'+FP_SVG+"</span>"}function fpBig(a){var u=fpUrl(a)
 ;return u?'<button type="button" class="fpbig" data-fpopen="'+a.id+'" aria-label="View the '+a.nice+' floor plan larger"><img src="'+u+'" alt="'+a.nice+' floor plan"></button>':'<div class="fpbig ph"><span class="fp-ph">'+FP_SVG+"<small>Floor plan coming soon</small></span></div>"}var fpReturn=null
 ;function openFP(a){var u=fpUrl(a);if(!u)return;$("fpTitle").innerHTML="Floor plan <span>"+a.nice+"</span>";$("fpImg").src=u;$("fpImg").alt=a.nice+" floor plan at "+(PK.name||"Overland Reserve")+"";fpReturn=document.activeElement;$("fpbox").hidden=false;$("fpClose").focus()}function closeFP(){
 if($("fpbox").hidden)return;$("fpbox").hidden=true;if(fpReturn&&fpReturn.focus)fpReturn.focus()}$("panel").addEventListener("click",function(e){var f=e.target.closest("[data-fpopen]");if(f){openFP(BYID[f.dataset.fpopen]);return}if(e.target.closest("[data-see3d]"))setMView("map")})
