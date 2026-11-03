@@ -5,7 +5,7 @@ SRC = os.path.join(ROOT, 'src')
 DIST = os.path.join(ROOT, 'dist')
 
 CSS = ['styles.css']
-GLOBAL_JS = ['overland-geometry.js', 'cms.js']
+GLOBAL_JS = ['overland-geometry.js', 'overland-site.js', 'cms.js']
 JS = ['tour.js', 'explore.js', 'extras.js', 'look.js', 'panel.js', 'nav.js', 'app.js', 'calculator.js']
 
 
