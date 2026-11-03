@@ -65,8 +65,13 @@
 #or3d .tour-head{display:flex;align-items:center;gap:14px;padding:12px 14px 12px 20px;border-bottom:1px solid var(--line);color:var(--ink)}
 #or3d .tour-head b{flex:1;font-size:16px}
 #or3d .tour-head span{font-weight:400;color:var(--muted)}
-#or3d .tour-head a{color:var(--navy);font-weight:600;font-size:14px;white-space:nowrap}
-#or3d .tour-x{appearance:none;border:0;background:var(--surface-2);width:36px;height:36px;border-radius:50%;font-size:20px;line-height:1;color:var(--ink);cursor:pointer}
+#or3d .tour-head a{color:var(--navy);font-weight:600;font-size:14px;white-space:nowrap;text-decoration:underline;text-decoration-color:transparent;text-underline-offset:4px;text-decoration-thickness:2px;transition:text-decoration-color .2s,color .2s}
+#or3d .tour-head a:hover{text-decoration-color:currentColor}
+#or3d .tour-head a:focus-visible{outline:2px solid var(--navy);outline-offset:3px;border-radius:4px}
+#or3d .tour-x{appearance:none;flex:none;border:0;background:var(--surface-2);width:40px;height:40px;border-radius:50%;font-size:22px;line-height:1;color:var(--navy);cursor:pointer;transition:background-color .2s,color .2s,transform .25s ease}
+@media (hover:hover){#or3d .tour-x:hover{background:var(--navy);color:#fff;transform:rotate(90deg)}}
+#or3d .tour-x:focus-visible{outline:2px solid var(--navy);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){#or3d .tour-x{transition:none}#or3d .tour-x:hover{transform:none}}
 #or3d .tour iframe{flex:1;width:100%;border:0;background:#1b1f24}
 #or3d .tour-fb{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:24px;background:var(--navy);color:#fff;text-align:center}
 #or3d .tour-fb p{margin:0;font-size:18px;font-weight:600}
