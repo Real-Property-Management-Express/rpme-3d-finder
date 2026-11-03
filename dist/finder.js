@@ -571,9 +571,12 @@ function sqParse(raw, now){
   take(/\b([0-4])\s*\+?\s*[- ]?(?:bed(?:room)?s?|br|bd|bdrm|b\/)(?=\b|\d)/g,function(m,a){ a=+a; if(beds.indexOf(a)>-1) return true; beds.push(a); out.items.push({k:'beds',v:a,label:a===0?'Studio':a+' bed',text:m.trim()}); return true; });
   if(beds.length) out.beds=beds.filter(function(v,i,a){return a.indexOf(v)===i;}).sort();
   take(/\b([1-3])(?:\.5)?\s*[- ]?(?:bath(?:room)?s?|ba)\b/g,function(m,a){ out.baths=(out.baths||[]); out.baths.push(+a); out.items.push({k:'baths',v:+a,label:a+' bath',text:m.trim()}); return true; });
-  take(/\b(first|1st|ground|bottom|lower|second|2nd|middle|third|3rd|top|upper)\s*(?:-|\s)?(?:floor|level|story|storey)\b/g,function(m,w){
-    var f=/first|1st|ground|bottom|lower/.test(w)?0:/second|2nd|middle/.test(w)?1:2;
-    out.floor=f; out.items.push({k:'floor',label:['1st','2nd','3rd'][f]+' floor',text:m.trim()}); return true; });
+  take(/\b(first|1st|ground|bottom|lower|second|2nd|middle|third|3rd|fourth|4th|fifth|5th|sixth|6th|seventh|7th|eighth|8th|top|upper)\s*(?:-|\s)?(?:floor|level|story|storey)\b/g,function(m,w){
+    var B=(window.__or&&window.__or.BLDGS&&window.__or.BLDGS[0])||{},base=B.base||1,nf=(B.floorGroups&&B.floorGroups.length)||3,W=['first','second','third','fourth','fifth','sixth','seventh','eighth'];
+    var f=/ground|bottom|lower/.test(w)?0:/top|upper/.test(w)?nf-1:/middle/.test(w)?Math.floor((nf-1)/2):(W.indexOf(w)>-1?W.indexOf(w)+1:parseInt(w,10))-base;
+    if(!(f>=0&&f<nf))return false;
+    var n=f+base,sx=['th','st','nd','rd'],v=n%100;
+    out.floor=f; out.items.push({k:'floor',label:n+(sx[(v-20)%10]||sx[v]||sx[0])+' floor',text:m.trim()}); return true; });
   take(/\b(?:no stairs|without stairs)\b/g,function(m){ out.floor=0; out.items.push({k:'floor',label:'1st floor',text:m}); return true; });
   take(/\b(accessible|accessibility|ada|wheelchair|handicap(?:ped)?(?: accessible)?|mobility)\b/g,function(m){ if(!out.ada){ out.ada=true; out.items.push({k:'ada',label:'Accessible',text:m}); } return true; });
   take(/\b(?:building|bldg\.?)?\s*(6400|6410|6420|6430|6440|6450|6460)\b(?:\s*bandel(?:\s*(?:rd|road))?(?:\s*nw)?)?/g,function(m,b){ out.bldg=b; out.items.push({k:'bldg',label:'Building '+b,text:m.trim()}); return true; });
@@ -602,8 +605,10 @@ items.sort(function(a,b){return ORDER.indexOf(a.k)-ORDER.indexOf(b.k);});
 said.innerHTML=items.map(function(it,i){var mi=it.k==='moveIn';return '<span class="tk'+(mi?' mi':'')+'"'+(mi?' title="Live availability for this date is coming soon"':'')+'>'+(mi?CAL:'')+esc(it.label)+'<button type="button" data-i="'+i+'" aria-label="Remove '+esc(it.label)+'">\u00d7</button></span>';}).join('')+'<button type="button" class="clr">Clear</button>';
 said.hidden=false;}
 function run(q){
-var r=sqParse(q);reset();items=[];
-if(!String(q).trim()||r.unit){window.OR3D_MOVEIN=null;paint('');O.apply();return false;}
+var pn=null,pt='';[].map.call($('plan').options,function(o){return o.value;}).filter(Boolean).sort(function(a,b){return b.length-a.length;}).some(function(n){var m=String(q).match(new RegExp('(^|[^a-z0-9])('+n.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')(?![a-z0-9])','i'));if(m){pn=n;pt=m[2];return true;}return false;});
+var r=sqParse(pn?String(q).replace(pt,' '):q);reset();items=[];
+if(pn){if(S.bldg&&!S.stay)O.overview();S.view='a';own('plan',pn);r.items.push({k:'plan',label:pn,text:pt});}
+if(!pn&&(!String(q).trim()||r.unit)){window.OR3D_MOVEIN=null;paint('');O.apply();return false;}
 if(S.bldg&&!S.stay)O.overview();
 S.view='a';
 if(r.beds)own('bedsS',r.beds.slice());
@@ -846,9 +851,9 @@ return aptRow(a,true)}).join(""):'<li class="empty">No apartments match. Try a h
 ;$("card").innerHTML=""}}document.querySelectorAll("#fmore .chips").forEach(function(g){g.addEventListener("click",function(e){var btn=e.target.closest("button");if(!btn)return;var f=g.dataset.f,arr=state[f+"S"],v=f==="price"?btn.dataset.v:+btn.dataset.v,i=arr.indexOf(v)
 ;if(i<0)arr.push(v);else arr.splice(i,1);if(state.sel&&!matches(state.sel))state.sel=null;apply()})});document.querySelectorAll("#fmore .chips button").forEach(function(btn){var f=btn.parentNode.dataset.f,v=btn.dataset.v,n=ALL.filter(function(a){if(f==="beds")return a.beds===+v
 ;if(f==="baths")return a.baths===+v;var r=v.split("-");return a.rent>=+r[0]&&a.rent<=+r[1]}).length;btn.insertAdjacentHTML("beforeend","<small>"+n+"</small>")});$("ada").addEventListener("change",function(){state.ada=this.checked;if(state.sel&&!matches(state.sel))state.sel=null;apply()})
-;function onFilter(){state.sqft=$("sqft").value;state.plan=$("plan").value;state.floorF=$("floorf").value;state.ada=$("ada").checked;if(state.sel&&!matches(state.sel))state.sel=null;apply()}["sqft","plan","floorf"].forEach(function(id){$(id).addEventListener("change",onFilter)})
+;function onFilter(){state.sqft=$("sqft").value;state.plan=$("plan").value;state.floorF=$("floorf").value;state.ada=$("ada").checked;if(state.sel&&!matches(state.sel))state.sel=null;apply()}(function(){var b0=BLDGS[0],ff=$("floorf");if(!ff||!b0)return;ff.innerHTML='<option value="">Any</option>'+b0.floorGroups.map(function(_,i){return'<option value="'+i+'">'+ORD(i+b0.base)+"</option>"}).join("")})();["sqft","plan","floorf"].forEach(function(id){$(id).addEventListener("change",onFilter)})
 ;$("clearf").addEventListener("click",function(){["sqft","plan","floorf"].forEach(function(id){$(id).value=""});$("ada").checked=false;state.beds="all";state.bedsS=[];state.bathsS=[];state.priceS=[];onFilter()});(function(){var m={};ALL.forEach(function(a){var k=a.nice;if(!m[k])m[k]={n:0,
-beds:a.beds,sf:a.sf};m[k].n++;m[k].sf=Math.min(m[k].sf,a.sf)});Object.keys(m).sort(function(x,y){return m[x].beds-m[y].beds||m[x].sf-m[y].sf}).forEach(function(k){var o=document.createElement("option");o.value=k;o.textContent=k+" ("+m[k].n+")";$("plan").appendChild(o)})})()
+beds:a.beds,sf:a.sf};m[k].n++;m[k].sf=Math.min(m[k].sf,a.sf)});Object.keys(m).sort(function(x,y){return m[x].beds-m[y].beds||m[x].sf-m[y].sf}).forEach(function(k){var o=document.createElement("option");o.value=k;o.textContent=k+(/bed|studio/i.test(k)?"":" \u00b7 "+(m[k].beds===0?"Studio":m[k].beds+" bed"))+" ("+m[k].n+")";$("plan").appendChild(o)})})()
 ;document.querySelector(".ctabs").addEventListener("click",function(e){var btn=e.target.closest("button");if(!btn)return;state.view=btn.dataset.v;renderPanel()});$("find").addEventListener("input",function(){state.q=this.value;if(state.bldg){state.bldg=null;state.sel=null;state.floor="all";apply()
 ;fly(homePos(),CENTER.clone(),900)}state.view="a";if(isMobile())setMView("list");renderPanel()});$("find").addEventListener("keydown",function(e){if(e.key!=="Enter")return;var a=findUnit(this.value);if(a)openApt(a)});$("alist").addEventListener("click",function(e){
 var btn=e.target.closest("[data-id]");if(!btn)return;var a=BYID[btn.dataset.id];if(state.sel===a){keepRow(btn,function(){state.sel=null;apply()});return}keepRow(btn,function(){state.stay=true;state.bldg=a.b;state.floor=a.floor;state.sel=a;state.hover=null;apply();frameBuilding(a.b)});revealCard()})
@@ -865,9 +870,8 @@ function keepRow(btn,fn){var list=btn.closest("ul"),id=btn.dataset.id,t0=btn.get
 });function zoomBy(k){var t=controls.target.clone(),d=camera.position.clone().sub(t),nl=Math.min(controls.maxDistance,Math.max(controls.minDistance,d.length()*k));fly(t.clone().add(d.setLength(nl)),t,350)}$("zin").addEventListener("click",function(){zoomBy(.7)})
 ;$("zout").addEventListener("click",function(){zoomBy(1.4)});var sheetState="half",panelEl=$("panel");function setSheet(){}var rq=0;if(window.ResizeObserver)new ResizeObserver(function(){if(rq)return;rq=requestAnimationFrame(function(){rq=0;resize()})}).observe(panelEl)
 ;$("ftoggle").addEventListener("click",function(){var open=!$("fmore").classList.contains("open");$("fmore").classList.toggle("open",open);this.setAttribute("aria-expanded",String(open));if(open&&isMobile()&&ROOTEL.classList.contains("ov-map"))setMView("list")});function revealCard(){
-var body=$("panel"),li=[].filter.call(body.querySelectorAll("li.open"),function(l){return l.offsetParent!==null})[0];if(!li)return;var hd=body.querySelector(".of-lhead"),off=hd?hd.getBoundingClientRect().height:0;var r=li.getBoundingClientRect(),p=body.getBoundingClientRect()
-;if(r.top>=p.top+off+8&&r.bottom<=p.bottom-8)return;var y=0,el=li;while(el&&el!==body){y+=el.offsetTop;el=el.offsetParent}var target=Math.max(0,Math.min(body.scrollHeight-body.clientHeight,y-off-8));if(reduceMotion){body.scrollTop=target;return}body.scrollTo({top:target,behavior:"smooth"})
-;setTimeout(function(){if(Math.abs(body.scrollTop-target)>4)body.scrollTop=target},700)}function openTour(beds){var id=TOURS[beds];if(!id)return;var url="https://my.matterport.com/show/?m="+id
+var body=$("panel");function want(){var li=[].filter.call(body.querySelectorAll("li.open"),function(l){return l.offsetParent!==null})[0];if(!li)return null;var hd=body.querySelector(".of-lhead"),off=hd?hd.getBoundingClientRect().height:0;var y=body.scrollTop+li.getBoundingClientRect().top-body.getBoundingClientRect().top-off-8;return Math.max(0,Math.min(body.scrollHeight-body.clientHeight,Math.round(y)))}var target=want();if(target===null||Math.abs(body.scrollTop-target)<3)return;if(reduceMotion){body.scrollTop=target;return}body.scrollTo({top:target,behavior:"smooth"})
+;setTimeout(function(){var t=want();if(t!==null&&Math.abs(body.scrollTop-t)>4)body.scrollTop=t},700)}function openTour(beds){var id=TOURS[beds];if(!id)return;var url="https://my.matterport.com/show/?m="+id
 ;$("tourTitle").innerHTML="3D tour <span>"+(state.sel?state.sel.nice:beds===0?"Studio":beds+" Bed")+"</span>";$("tourOpen").href=url;$("tourFbLink").href=url;$("tourFallback").hidden=true;$("tourFrame").hidden=false;$("tourFrame").src=url+"&play=1&qs=1";if(TOUR_BLOCKED)showTourFallback()
 ;$("tour").hidden=false;tourReturn=document.activeElement;$("tourClose").focus()}var TOUR_BLOCKED=false;function showTourFallback(){$("tourFrame").hidden=true;$("tourFallback").hidden=false}document.addEventListener("securitypolicyviolation",function(e){if(/matterport/i.test(e.blockedURI||"")){
 TOUR_BLOCKED=true;if(!$("tour").hidden)showTourFallback()}});var tourReturn=null;function closeTour(){if($("tour").hidden)return;$("tour").hidden=true;$("tourFrame").src="about:blank";if(tourReturn&&tourReturn.focus)tourReturn.focus()}$("panel").addEventListener("click",function(e){

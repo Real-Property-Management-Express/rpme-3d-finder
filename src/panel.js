@@ -103,9 +103,12 @@ function sqParse(raw, now){
   // bathrooms
   take(/\b([1-3])(?:\.5)?\s*[- ]?(?:bath(?:room)?s?|ba)\b/g,function(m,a){ out.baths=(out.baths||[]); out.baths.push(+a); out.items.push({k:'baths',v:+a,label:a+' bath',text:m.trim()}); return true; });
   // floor
-  take(/\b(first|1st|ground|bottom|lower|second|2nd|middle|third|3rd|top|upper)\s*(?:-|\s)?(?:floor|level|story|storey)\b/g,function(m,w){
-    var f=/first|1st|ground|bottom|lower/.test(w)?0:/second|2nd|middle/.test(w)?1:2;
-    out.floor=f; out.items.push({k:'floor',label:['1st','2nd','3rd'][f]+' floor',text:m.trim()}); return true; });
+  take(/\b(first|1st|ground|bottom|lower|second|2nd|middle|third|3rd|fourth|4th|fifth|5th|sixth|6th|seventh|7th|eighth|8th|top|upper)\s*(?:-|\s)?(?:floor|level|story|storey)\b/g,function(m,w){
+    var B=(window.__or&&window.__or.BLDGS&&window.__or.BLDGS[0])||{},base=B.base||1,nf=(B.floorGroups&&B.floorGroups.length)||3,W=['first','second','third','fourth','fifth','sixth','seventh','eighth'];
+    var f=/ground|bottom|lower/.test(w)?0:/top|upper/.test(w)?nf-1:/middle/.test(w)?Math.floor((nf-1)/2):(W.indexOf(w)>-1?W.indexOf(w)+1:parseInt(w,10))-base;
+    if(!(f>=0&&f<nf))return false;
+    var n=f+base,sx=['th','st','nd','rd'],v=n%100;
+    out.floor=f; out.items.push({k:'floor',label:n+(sx[(v-20)%10]||sx[v]||sx[0])+' floor',text:m.trim()}); return true; });
   take(/\b(?:no stairs|without stairs)\b/g,function(m){ out.floor=0; out.items.push({k:'floor',label:'1st floor',text:m}); return true; });
   // accessible
   take(/\b(accessible|accessibility|ada|wheelchair|handicap(?:ped)?(?: accessible)?|mobility)\b/g,function(m){ if(!out.ada){ out.ada=true; out.items.push({k:'ada',label:'Accessible',text:m}); } return true; });
@@ -138,8 +141,10 @@ items.sort(function(a,b){return ORDER.indexOf(a.k)-ORDER.indexOf(b.k);});
 said.innerHTML=items.map(function(it,i){var mi=it.k==='moveIn';return '<span class="tk'+(mi?' mi':'')+'"'+(mi?' title="Live availability for this date is coming soon"':'')+'>'+(mi?CAL:'')+esc(it.label)+'<button type="button" data-i="'+i+'" aria-label="Remove '+esc(it.label)+'">\u00d7</button></span>';}).join('')+'<button type="button" class="clr">Clear</button>';
 said.hidden=false;}
 function run(q){
-var r=sqParse(q);reset();items=[];
-if(!String(q).trim()||r.unit){window.OR3D_MOVEIN=null;paint('');O.apply();return false;}
+var pn=null,pt='';[].map.call($('plan').options,function(o){return o.value;}).filter(Boolean).sort(function(a,b){return b.length-a.length;}).some(function(n){var m=String(q).match(new RegExp('(^|[^a-z0-9])('+n.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')(?![a-z0-9])','i'));if(m){pn=n;pt=m[2];return true;}return false;});
+var r=sqParse(pn?String(q).replace(pt,' '):q);reset();items=[];
+if(pn){if(S.bldg&&!S.stay)O.overview();S.view='a';own('plan',pn);r.items.push({k:'plan',label:pn,text:pt});}
+if(!pn&&(!String(q).trim()||r.unit)){window.OR3D_MOVEIN=null;paint('');O.apply();return false;}
 if(S.bldg&&!S.stay)O.overview();
 S.view='a';
 if(r.beds)own('bedsS',r.beds.slice());
