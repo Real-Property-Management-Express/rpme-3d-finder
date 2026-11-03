@@ -123,7 +123,7 @@ function aveShell(c){
 var TYPES = {
 AVE: {
   label:'Apartments, lobby, clubroom and fitness',
-  tags:[['Leasing office','Office'],['Clubroom & fitness','Amenities']],
+  tags:[['Leasing office','Office',[52,14,4]],['Clubroom & fitness','Amenities',[100,AVE_LIFT+5*AVE_FH+6,62]]],
   W:AVE_W, D:AVE_D, FH:AVE_FH, RECT:RECT, base:2, shell:aveShell,
   floors:[aveFloor(2),aveFloor(3),aveFloor(4),aveFloor(5),aveFloor(6)]
 }
