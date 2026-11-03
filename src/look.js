@@ -133,7 +133,7 @@ con.forEach(function(t,j){var s=t.s*(0.9+rnd()*.4);o4.rotation.set(0,rnd()*6.28,
 o4.rotation.set(0,0,0);o4.position.set(t.x,2.5*s,t.z);o4.scale.set(.8*s,.5*s,.8*s);o4.updateMatrix();tIM.setMatrixAt(ti2++,o4.matrix);});
 crown.visible=false;trunk.visible=false;}
 
-if(O.BLDGS&&O.BLDGS.length){
+if(O.BLDGS&&O.BLDGS.length&&!(window.OR3D_PACK||{}).noYards){
 var W=64.5,D=62.5,bed=4.5,shrubs=[],grass=[];
 var mulchM=new T.MeshStandardMaterial({color:lin('#a8a296'),roughness:1,envMapIntensity:.3});
 var aoM=new T.MeshBasicMaterial({color:0x000000,transparent:true,opacity:.42,depthWrite:false,map:blob(true),polygonOffset:true,polygonOffsetFactor:-1});
