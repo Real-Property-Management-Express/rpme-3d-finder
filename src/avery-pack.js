@@ -53,7 +53,7 @@ function aveShell(c){
   box([0,0,268,249],0,L-.5,M.concrete);
   box([0,0,268,4],1,L-3,M.glass,false);
   var wings=[[0,21,118,78],[118,4,268,45],[113,78,146,185],[0,183,146,249]];
-  wings.forEach(function(r){ box(r,L-.5,top,M.siding); box([r[0]-.4,r[1]-.4,r[2]+.4,r[3]+.4],top,top+1.4,M.coping); });
+  wings.forEach(function(r){ box(r,L-.5,top,M.siding); box([r[0]-.4,r[1]-.4,r[2]+.4,r[3]+.4],top,top+1.4,M.coping); for(var fl=1;fl<5;fl++){ var yb=L+fl*c.FH; box([r[0]-.25,r[1]-.25,r[2]+.25,r[3]+.25],yb-.3,yb+.3,M.coping,false); } box([r[0]-.3,r[1]-.3,r[2]+.3,r[3]+.3],L-.6,L+.6,M.coping,false); });
   box([0,78,113,183],L-.5,L+c.FH+3,M.sidingSide);
   box([2,80,111,181],L+c.FH+3,L+c.FH+3.4,M.roof,false);
   var g=[146,45,268,249];
@@ -61,11 +61,13 @@ function aveShell(c){
   box(g,L+5*c.FH,L+5*c.FH+1.2,M.concrete);
   function win(x,y,z,ry,w,h){ c.winFrames.push({b:c.b,x:x,y:y,z:z,ry:ry,w:w+.5,h:h+.5,d:.35}); c.winGlass.push({b:c.b,x:x,y:y,z:z,ry:ry,w:w,h:h,d:.45}); }
   for(var f=0;f<5;f++){
-    var wy=L+f*c.FH+c.FH*.55;
-    for(var x=6;x<265;x+=11){ var zf=x<118?21:4; win(x-hw,wy,zf-hd-.3,Math.PI,5.5,5.6); }
-    for(var x2=5;x2<146;x2+=11){ win(x2-hw,wy,249-hd+.3,0,5.5,5.6); }
-    for(var z=26;z<246;z+=11){ if(z>78&&z<183)continue; win(-hw-.3,wy,z-hd,-Math.PI/2,5.5,5.6); }
-    for(var z2=84;z2<182;z2+=11){ win(113-hw-.3,wy,z2-hd,-Math.PI/2,5.5,5.6); }
+    var wy=L+f*c.FH+c.FH*.5;
+    for(var x=5;x<266;x+=8.5){ var zf=x<118?21:4; win(x-hw,wy,zf-hd-.3,Math.PI,4.6,6.4); }
+    for(var x2=5;x2<145;x2+=8.5){ win(x2-hw,wy,249-hd+.3,0,4.6,6.4); }
+    for(var x3=5;x3<112;x3+=8.5){ win(x3-hw,wy,78-hd+.3,0,4.6,6.4); win(x3-hw,wy,183-hd-.3,Math.PI,4.6,6.4); }
+    for(var z=25;z<247;z+=8.5){ if(z>78&&z<183)continue; win(-hw-.3,wy,z-hd,-Math.PI/2,4.6,6.4); }
+    for(var z2=83;z2<182;z2+=8.5){ win(113-hw-.3,wy,z2-hd,-Math.PI/2,4.6,6.4); }
+    for(var z3=8;z3<45;z3+=8.5){ win(268-hw+.3,wy,z3-hd,Math.PI/2,4.6,6.4); }
   }
 }
 var TYPES = {
@@ -89,11 +91,11 @@ function site(c){
   ribbon([new V(-1400,hd+30),new V(1400,hd+30)],36,M.asphalt,.5);
   var blocks=[[-hw-420,-hd-500,-hw-80,-hd-80],[-hw,-hd-500,hw,-hd-80],[hw+80,-hd-500,hw+420,-hd-80],[-hw-420,-hd,-hw-80,hd],[hw+80,-hd,hw+420,hd],[-hw-420,hd+60,-hw-80,hd+420],[-hw,hd+60,hw,hd+420],[hw+80,hd+60,hw+420,hd+420]];
   blocks.forEach(function(b,i){
-    var h=[34,52,26,40,30,22,46,28][i],m=new THREE.Mesh(new THREE.BoxGeometry(b[2]-b[0],h,b[3]-b[1]),M.houseWall);
+    var h=[18,30,14,24,20,16,28,18][i],m=new THREE.Mesh(new THREE.BoxGeometry(b[2]-b[0],h,b[3]-b[1]),M.houseWall);
     m.position.set((b[0]+b[2])/2,h/2,(b[1]+b[3])/2);m.castShadow=m.receiveShadow=true;scene.add(m);
   });
   return {np:true};
 }
-return {place:place,site:site,name:'The Avery',noYards:true,noBadge:true,frame:2.3,
+return {place:place,site:site,name:'The Avery',noYards:true,noBadge:true,frame:2.3,home:[430,240,330],gap:34,
   labels:[{t:'NP Ave N',p:[0,1,-AVE_D/2-38]}]};
 })();

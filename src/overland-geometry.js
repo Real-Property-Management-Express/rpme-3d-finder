@@ -29,6 +29,8 @@ KC:[22.3,0,40.5,21], IR:[40.5,0,64.5,21], JR:[40.5,21,64.5,41], LR:[40.5,41,64.5
 TOP:[22.3,0,64.5,21], RIGHT:[40.5,21,64.5,62.5], CORE:[22.3,21,40.5,62.5]
 };
 var IC={
+bed:'<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1.5 13V4.5M1.5 10h13v3M14.5 10V8.5a1.5 1.5 0 0 0-1.5-1.5H7v3M4.2 9a1.2 1.2 0 1 0 0-2.4 1.2 1.2 0 0 0 0 2.4z"/></svg>',
+bath:'<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1.5 8h13v1.5A3.5 3.5 0 0 1 11 13H5a3.5 3.5 0 0 1-3.5-3.5zM3.5 8V3.6a1.6 1.6 0 0 1 3.1-.5M4.6 13l-.8 1.5M11.4 13l.8 1.5"/></svg>',
 bldg:'<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 14.5V2.5h7v12M10 6.5h3.5v8M5.2 5h2.6M5.2 7.8h2.6M5.2 10.6h2.6M1.5 14.5h13"/></svg>',
 unit:'<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6.3 2 5 14M11.3 2 10 14M2.5 5.5h11M2 10.5h11"/></svg>',
 floor:'<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2 1.5 5.5 8 9l6.5-3.5zM1.5 8.6 8 12.1l6.5-3.5"/></svg>',
