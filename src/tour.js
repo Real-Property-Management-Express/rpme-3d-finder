@@ -81,6 +81,6 @@ O.controls.addEventListener('start',function(){if(on)end();});
 addEventListener('keydown',function(e){if(!on||!$('tour').hidden)return;if(e.key==='Escape'){e.preventDefault();end();}else if(e.key==='ArrowRight'&&card.contains(document.activeElement))go(i+1);else if(e.key==='ArrowLeft'&&card.contains(document.activeElement))go(i-1);});
 function hash(){if(/^#tour$/i.test(location.hash))setTimeout(start,700);}
 addEventListener('hashchange',hash);hash();
-window.OR3D_PTOUR={start:start,end:end,go:go};
+window.OR3D_PTOUR={start:start,end:end,go:go,stops:function(){return stops;}};
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();})();

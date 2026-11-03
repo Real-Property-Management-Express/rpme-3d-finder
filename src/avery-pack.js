@@ -78,17 +78,29 @@ function aveShell(c){
   function tbox(r,y0,y1,mat,su,sv){ return aveUV(box(r,y0,y1,mat),su,sv); }
   var X=AVE_TX,CU=aveMat(X('seam','#c98a5e'),{roughness:.5,metalness:.25}),SG=aveMat(X('panel','#8d907e')),CR=aveMat(X('panel','#e4dfd2')),DK=aveMat(X('seam','#2f3337'),{roughness:.55,metalness:.2}),BR=aveMat(X('brick','#d3ccbd'),{roughness:.92}),RF=aveMat(X('roof'),{roughness:.95});
   function fbox(r,y0,y1,f){ var m=new THREE.Mesh(c.BOX,[f[0],f[1],RF,RF,f[2],f[3]]); m.scale.set(r[2]-r[0],y1-y0,r[3]-r[1]); m.position.set((r[0]+r[2])/2-hw,(y0+y1)/2,(r[1]+r[3])/2-hd); m.castShadow=m.receiveShadow=true; s.add(m); return aveUV(m,12,12); }
-  tbox([0,4,268,45],0,L-.5,BR,8); tbox([0,0,268,4],L-3,L-.5,BR,8); tbox([0,0,268,4],0,1,BR,8);
   tbox([113,45,146,249],0,L-.5,BR,8); tbox([0,45,113,78],0,L-.5,BR,8); tbox([0,183,113,249],0,L-.5,BR,8);
   tbox([0,78,113,183],0,L-.5,BR,8).name='theatre';
   var FLR=new THREE.MeshStandardMaterial({color:0x34373c,roughness:.9}),STG=new THREE.MeshStandardMaterial({color:0x7d5a3c,roughness:.7}),SEAT=new THREE.MeshStandardMaterial({color:0x5a1820,roughness:.85}),WAL=new THREE.MeshStandardMaterial({color:0x2a2d31,roughness:.9});
   box([1,79,112,182],0,.4,FLR,false); box([4,92,28,169],.4,4.2,STG); box([1,79,3,182],.4,L+c.FH,WAL,false);
   [[1,79,112,80],[1,181,112,182],[111,79,112,182]].forEach(function(w){ box(w,.4,9,WAL,false); });
   for(var k=0;k<13;k++){ var sx0=36+k*5.6; [[88,113],[117,144],[148,173]].forEach(function(zz){ box([sx0,zz[0],sx0+3.4,zz[1]],.4,1.8+k*.85,SEAT); }); }
-  box([0,0,268,4],1,L-3,M.glass,false);
-  for(var mx=0;mx<=268;mx+=6){ box([mx-.25,-.25,mx+.25,.3],1,L-3,M.frame,false); }
-  box([0,-.3,268,.35],L-3.2,L-2.6,M.frame,false);
-  box([0,-.3,268,.35],.6,1.2,M.frame,false);
+  var LB=[30,110];
+  [[0,LB[0]],[LB[0],LB[1]],[LB[1],268]].forEach(function(seg,si){ var nm=si===1?'lobby':'';
+    tbox([seg[0],4,seg[1],45],0,L-.5,BR,8).name=nm; tbox([seg[0],0,seg[1],4],L-3,L-.5,BR,8).name=nm; tbox([seg[0],0,seg[1],4],0,1,BR,8).name=nm;
+    box([seg[0],0,seg[1],4],1,L-3,M.glass,false).name=nm;
+    box([seg[0],-.3,seg[1],.35],L-3.2,L-2.6,M.frame,false).name=nm; box([seg[0],-.3,seg[1],.35],.6,1.2,M.frame,false).name=nm; });
+  for(var mx=0;mx<=268;mx+=6){ box([mx-.25,-.25,mx+.25,.3],1,L-3,M.frame,false).name=(mx>LB[0]&&mx<LB[1])?'lobby':''; }
+  (function(){ function mt(h,o){ return new THREE.MeshStandardMaterial(Object.assign({color:h,roughness:.8},o||{})); }
+    var WD=mt(0xb58a5f,{roughness:.6}),WH=mt(0xefece6),SF=mt(0x3d4a5c),GN=mt(0x4c7a3c),LK=mt(0x8f969c,{roughness:.5,metalness:.3}),RG=mt(0xc9b79a,{roughness:1}),DKF=mt(0x2f3337);
+    box([31,5,109,44],0,.3,WD,false); box([68,6,90,19],.3,.4,RG,false);
+    box([42,10,62,13],.3,3.8,WH); box([42,10,62,13],3.8,4.1,WD); box([58,13,62,19],.3,3.8,WH); box([46,15,54,19],.3,7,mt(0x8a6a4a));
+    box([70,7,84,10],.3,2.6,SF); box([70,15,84,18],.3,2.6,SF); box([74,11,80,14],.3,1.5,WD);
+    box([86,8,89,11],.3,2.4,SF); box([86,13,89,16],.3,2.4,SF);
+    box([92,17,108,20],.3,8,LK); for(var lx=93;lx<108;lx+=2.4){ box([lx,16.8,lx+.15,17],.6,7.6,DKF,false); }
+    box([94,26,106,34],2.6,2.9,WD); box([97,28,103,32],.3,2.6,DKF,false);
+    [[34,7],[34,18],[66,18],[108,7]].forEach(function(pl){ box([pl[0]-1,pl[1]-1,pl[0]+1,pl[1]+1],.3,1.6,DKF); box([pl[0]-1.6,pl[1]-1.6,pl[0]+1.6,pl[1]+1.6],1.6,5,GN); });
+    box([31,44,109,45],.3,L-.6,DKF,false);
+  })();
   var wings=[[0,21,118,78],[118,4,268,45],[113,78,146,185],[0,183,146,249]];
   var FACES=[[CR,SG,CR,SG],[CU,CU,CR,CU],[CR,CR,CR,CR],[SG,SG,SG,CR]];
   wings.forEach(function(r,wi){ fbox(r,L-.5,top,FACES[wi]); box([r[0]-.4,r[1]-.4,r[2]+.4,r[3]+.4],top,top+1.4,M.coping); aveUV(box([r[0]+.5,r[1]+.5,r[2]-.5,r[3]-.5],top+1.4,top+1.6,RF,false),12); for(var fl=1;fl<5;fl++){ var yb=L+fl*c.FH; box([r[0]-.25,r[1]-.25,r[2]+.25,r[3]+.25],yb-.3,yb+.3,M.coping,false); } box([r[0]-.3,r[1]-.3,r[2]+.3,r[3]+.3],L-.6,L+.6,M.coping,false); });
@@ -111,7 +123,7 @@ function aveShell(c){
 var TYPES = {
 AVE: {
   label:'Apartments, lobby, clubroom and fitness',
-  tags:[['Leasing office','Office'],['Clubroom','Club'],['Fitness/yoga','Fitness'],['Rooftop patio','Rooftop']],
+  tags:[['Leasing office','Office'],['Clubroom & fitness','Amenities']],
   W:AVE_W, D:AVE_D, FH:AVE_FH, RECT:RECT, base:2, shell:aveShell,
   floors:[aveFloor(2),aveFloor(3),aveFloor(4),aveFloor(5),aveFloor(6)]
 }
@@ -170,6 +182,14 @@ function site(c){
   treeLine('z',-hw-7,-hd+10,hd,30); if(!HERO){treeLine('z',WX-33,-700,700,32); treeLine('z',EX+33,-700,700,32);} treeLine('z',hw+7,-hd+10,gz0-4,30);
   function lamps(a,line,from,to,side){ for(var u=from;u<to;u+=90){ if(a==='x'){ if(cross(u,line))continue; poles.push([u,12,line,0,.7,24,.7]); heads.push([u,24.2,line+side*2.5,0,1.5,.7,4]); } else { if(cross(line,u))continue; poles.push([line,12,u,0,.7,24,.7]); heads.push([line+side*2.5,24.2,u,0,4,.7,1.5]); } } }
   if(!HERO){lamps('x',-hd-3,-700,700,-1); lamps('x',NZ-33,-700,700,1); lamps('z',WX+29,-700,700,-1); lamps('z',WX-29,-700,700,1); lamps('z',EX-29,-700,700,1); lamps('z',EX+29,-700,700,-1);}
+  if(HERO){ var E=[-hw-96,-hd-112,hw+96,hd+66],EDGE=new THREE.MeshStandardMaterial({color:0xdcd8ce,roughness:.95});
+    bx(E[0],E[1],E[2],E[3],-14,.15,EDGE,0,0,false); var top=new THREE.Mesh(new THREE.PlaneGeometry(E[2]-E[0],E[3]-E[1]),WALK); top.rotation.x=-Math.PI/2; top.position.set((E[0]+E[2])/2,.2,(E[1]+E[3])/2); top.receiveShadow=true; aveUV(top,1,1); walkT.repeat.set(1/10,1/10); scene.add(top);
+    ribbon([new V(E[0],NZ),new V(E[2],NZ)],60,M.road,.5); ribbon([new V(WX,E[1]),new V(WX,E[3])],52,M.road,.5); ribbon([new V(EX,E[1]),new V(EX,E[3])],52,M.road,.5); ribbon([new V(E[0],SZ),new V(E[2],SZ)],36,M.asphalt,.5);
+    for(var hx=E[0];hx<E[2]-20;hx+=40){ if(cross(hx+20,NZ))continue; mark(hx,NZ-.9,hx+40,NZ-.4,PY); mark(hx,NZ+.4,hx+40,NZ+.9,PY); }
+    [WX,EX].forEach(function(xc){ for(var hz=E[1];hz<E[3]-20;hz+=40){ if(cross(xc,hz+20))continue; mark(xc-.9,hz,xc-.4,hz+40,PY); mark(xc+.4,hz,xc+.9,hz+40,PY); } zebraX(xc-38,NZ-30,NZ+30); zebraX(xc+38,NZ-30,NZ+30); zebraZ(NZ+42,xc-26,xc+26); });
+    curbCars('x',NZ+30,-1,-hw+10,hw-10); curbCars('x',NZ-30,1,-hw+10,hw-10); curbCars('z',WX+26,-1,-hd+10,hd); curbCars('z',EX-26,1,gz0,hd);
+    treeLine('x',NZ-37,E[0]+12,E[2]-12,32); treeLine('z',WX-33,NZ+40,E[3]-8,32); treeLine('z',EX+33,NZ+40,E[3]-8,32);
+    lamps('x',-hd-3,-hw+20,hw,-1); lamps('x',NZ-33,E[0]+20,E[2]-20,1); }
   var PAL=['red','tan','grey','buff','dark'];
   var FAC={},SHOP=aveMat(X('shop'),{roughness:.9}),NRF=aveMat(X('roof'),{roughness:.95,color:0xf2f2f0}),NCOP=new THREE.MeshStandardMaterial({color:0xc4c5c3,roughness:.9}),NMECH=new THREE.MeshStandardMaterial({color:0xcfd0ce,roughness:.9});
   PAL.forEach(function(k){ FAC[k]=aveMat(X('facade',k),{roughness:.95}); });
