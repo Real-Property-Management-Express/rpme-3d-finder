@@ -159,9 +159,10 @@ var ehd=62.5/2,ex=-8;
 var darkM=new T.MeshStandardMaterial({color:lin('#1b1c1e'),roughness:.45,metalness:.6});
 var soffM=new T.MeshStandardMaterial({color:lin('#f3ead8'),emissive:lin('#ffe2b0'),emissiveIntensity:.55,roughness:.6});
 var padM=new T.MeshStandardMaterial({color:lin('#cfcac0'),roughness:.95,envMapIntensity:.3});
-var bars=[],rods=[],lamps=[],glows=[],pads=[],plates=[];
-O.BLDGS.forEach(function(b){var g=new T.Group();g.position.set(b.x,0,b.z);g.rotation.y=b.rot;g.updateMatrixWorld(true);var mw=g.matrixWorld,z=ehd+.62;
-function at(arr,x,y,zz,sx,sy,sz,rx,rz){arr.push({m:new T.Matrix4().compose(new T.Vector3(x,y,zz),new T.Quaternion().setFromEuler(new T.Euler(rx||0,0,rz||0)),new T.Vector3(sx,sy,sz)).premultiply(mw)});}
+var B1=new T.BoxGeometry(1,1,1),CY=new T.CylinderGeometry(.5,.5,1,6),pads=[];
+function inst(geo,mat,list,shadow,to){if(!list.length)return;var im=new T.InstancedMesh(geo,mat,list.length);list.forEach(function(it,j){im.setMatrixAt(j,it.m);});im.castShadow=shadow;im.receiveShadow=true;to.add(im);return im;}
+O.BLDGS.forEach(function(b){var g=new T.Group();g.position.set(b.x,0,b.z);g.rotation.y=b.rot;g.updateMatrixWorld(true);var mw=g.matrixWorld,z=ehd+.62,sh=b.shell||S,bars=[],rods=[],lamps=[],glows=[];
+function at(arr,x,y,zz,sx,sy,sz,rx,rz,world){var m=new T.Matrix4().compose(new T.Vector3(x,y,zz),new T.Quaternion().setFromEuler(new T.Euler(rx||0,0,rz||0)),new T.Vector3(sx,sy,sz));if(world||!b.shell)m.premultiply(mw);arr.push({m:m});}
 [[.2,9.4],[11.3,19.7],[21.8,30.2]].forEach(function(w,f){var h=w[1]-w[0],cy=(w[0]+w[1])/2;
 at(bars,ex-1.5,cy,z,.22,h,.3);at(bars,ex+1.5,cy,z,.22,h,.3);
 if(f===0){at(bars,ex,7.3,z,9,.22,.3);at(bars,ex-1.5+.05,3.6,z+.02,.1,6.6,.32);}});
@@ -170,17 +171,15 @@ at(glows,ex,9.43,ehd+3.4,10.6,.06,5.4);
 [-5.4,5.4].forEach(function(dx){var x0=ex+dx,y0=16,z0=ehd+.4,y1=10.3,z1=ehd+6.2,len=Math.hypot(y0-y1,z1-z0),ang=Math.atan2(z1-z0,y0-y1);
 at(rods,x0,(y0+y1)/2,(z0+z1)/2,.14,len,.14,ang,0);});
 [-6.4,6.4].forEach(function(dx){at(lamps,ex+dx,7.6,ehd+.5,.7,1.1,.5);at(glows,ex+dx,7.15,ehd+.77,.5,.12,.04);});
-at(pads,ex,.5,ehd+3.2,11,.12,6.4);
-plates.push({b:b,mw:mw});});
-function inst(geo,mat,list,shadow){if(!list.length)return;var im=new T.InstancedMesh(geo,mat,list.length);list.forEach(function(it,j){im.setMatrixAt(j,it.m);});im.castShadow=shadow;im.receiveShadow=true;S.add(im);return im;}
-var B1=new T.BoxGeometry(1,1,1),CY=new T.CylinderGeometry(.5,.5,1,6);
-inst(B1,darkM,bars,true);inst(CY,darkM,rods,false);inst(B1,darkM,lamps,false);inst(B1,soffM,glows,false);inst(B1,padM,pads,false);
-plates.forEach(function(p){var n=String(p.b.num||'');if(!n)return;
-var c=document.createElement('canvas');c.width=64;c.height=256;var g=c.getContext('2d');g.fillStyle='#c9844c';g.font='700 54px Inter,Arial,sans-serif';g.textAlign='center';g.textBaseline='middle';
-for(var i=0;i<n.length;i++)g.fillText(n[i],32,34+i*62);
+at(pads,ex,.5,ehd+3.2,11,.12,6.4,0,0,true);
+inst(B1,darkM,bars,true,sh);inst(CY,darkM,rods,false,sh);inst(B1,darkM,lamps,false,sh);inst(B1,soffM,glows,false,sh);
+var n=String(b.num||'');if(!n)return;
+var c=document.createElement('canvas');c.width=64;c.height=256;var cx=c.getContext('2d');cx.fillStyle='#c9844c';cx.font='700 54px Inter,Arial,sans-serif';cx.textAlign='center';cx.textBaseline='middle';
+for(var i=0;i<n.length;i++)cx.fillText(n[i],32,34+i*62);
 var t=new T.CanvasTexture(c);t.encoding=T.sRGBEncoding;t.anisotropy=4;
-var m=new T.Mesh(new T.PlaneGeometry(1.9,7.6),new T.MeshStandardMaterial({map:t,transparent:true,roughness:.4,metalness:.7,envMapIntensity:1}));
-m.position.set(ex+6.7,15.6,ehd+.42);m.applyMatrix4(p.mw);S.add(m);});
+var pm=new T.Mesh(new T.PlaneGeometry(1.9,7.6),new T.MeshStandardMaterial({map:t,transparent:true,roughness:.4,metalness:.7,envMapIntensity:1}));
+pm.position.set(ex+6.7,15.6,ehd+.42);if(b.shell)b.shell.add(pm);else{pm.applyMatrix4(mw);S.add(pm);}});
+inst(B1,padM,pads,false,S);
 }
 
 var R=null,rawRender=null,last=new T.Matrix4(),lastP=new T.Matrix4();
