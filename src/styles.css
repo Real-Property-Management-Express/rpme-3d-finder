@@ -68,10 +68,14 @@
 #or3d .tour-head a{color:var(--navy);font-weight:600;font-size:14px;white-space:nowrap;text-decoration:underline;text-decoration-color:transparent;text-underline-offset:4px;text-decoration-thickness:2px;transition:text-decoration-color .2s,color .2s}
 #or3d .tour-head a:hover{text-decoration-color:currentColor}
 #or3d .tour-head a:focus-visible{outline:2px solid var(--navy);outline-offset:3px;border-radius:4px}
-#or3d .tour-x{appearance:none;flex:none;border:0;background:var(--surface-2);width:40px;height:40px;border-radius:50%;font-size:22px;line-height:1;color:var(--navy);cursor:pointer;transition:background-color .2s,color .2s,transform .25s ease}
-@media (hover:hover){#or3d .tour-x:hover{background:var(--navy);color:#fff;transform:rotate(90deg)}}
-#or3d .tour-x:focus-visible{outline:2px solid var(--navy);outline-offset:2px}
-@media (prefers-reduced-motion:reduce){#or3d .tour-x{transition:none}#or3d .tour-x:hover{transform:none}}
+#or3d .tour-x{appearance:none;flex:none;border:0;background:var(--surface-2);width:40px;height:40px;border-radius:50%;color:var(--navy);cursor:pointer}
+#or3d .tour-x,#or3d .or3d-legend .lg-x,.or3d-sched .sx{position:relative;padding:0;font-size:0;transition:background-color .2s,color .2s,transform .25s ease}
+#or3d .tour-x:before,#or3d .tour-x:after,#or3d .or3d-legend .lg-x:before,#or3d .or3d-legend .lg-x:after,.or3d-sched .sx:before,.or3d-sched .sx:after{content:"";position:absolute;left:50%;top:50%;width:16px;height:2px;margin:-1px 0 0 -8px;border-radius:2px;background:currentColor;transform:rotate(45deg)}
+#or3d .tour-x:after,#or3d .or3d-legend .lg-x:after,.or3d-sched .sx:after{transform:rotate(-45deg)}
+@media (hover:hover){#or3d .tour-x:hover,#or3d .or3d-legend .lg-x:hover{background:var(--navy);color:#fff;transform:rotate(90deg)}.or3d-sched .sx:hover{background:var(--navy,var(--brand-color-1,#003566));color:#fff;transform:rotate(90deg)}}
+#or3d .tour-x:focus-visible,#or3d .or3d-legend .lg-x:focus-visible{outline:2px solid var(--navy);outline-offset:2px}
+.or3d-sched .sx:focus-visible{outline:2px solid var(--navy,var(--brand-color-1,#003566));outline-offset:2px}
+@media (prefers-reduced-motion:reduce){#or3d .tour-x,#or3d .or3d-legend .lg-x,.or3d-sched .sx{transition:none}#or3d .tour-x:hover,#or3d .or3d-legend .lg-x:hover,.or3d-sched .sx:hover{transform:none}}
 #or3d .tour iframe{flex:1;width:100%;border:0;background:#1b1f24}
 #or3d .tour-fb{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:24px;background:var(--navy);color:#fff;text-align:center}
 #or3d .tour-fb p{margin:0;font-size:18px;font-weight:600}
@@ -473,7 +477,7 @@ html.or3d-locked #or3d{min-height:0}
 .or3d-sched .sb{position:relative;width:min(520px,100%);max-height:100%;overflow:auto;background:#fff;border-radius:14px;box-shadow:0 30px 70px #00000059;padding:22px 22px 18px;font-family:var(--font-body,system-ui,-apple-system,"Inter",sans-serif);color:var(--font-color-dark,#10233a);text-align:left}
 .or3d-sched .sh{display:flex;align-items:flex-start;gap:12px;margin:0 0 4px}
 .or3d-sched .sh b{flex:1;font-size:20px;line-height:1.25;font-weight:700}
-.or3d-sched .sx{appearance:none;flex:none;border:0;background:#f3efe6;width:36px;height:36px;border-radius:50%;font-size:20px;line-height:1;cursor:pointer;color:inherit}
+.or3d-sched .sx{appearance:none;flex:none;border:0;background:#f3efe6;width:36px;height:36px;border-radius:50%;cursor:pointer;color:inherit}
 .or3d-sched .ss{margin:0 0 16px;font-size:14px;line-height:1.45;color:var(--dark-grey,#5d6876)}
 .or3d-sched .w-form{margin:0}
 .or3d-sched form{margin:0}
@@ -522,7 +526,7 @@ html.or3d-locked #or3d{min-height:0}
 #or3d .or3d-legend.on{opacity:1;visibility:visible;transform:none}
 #or3d .or3d-legend .lg-h{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:4px}
 #or3d .or3d-legend .lg-h b{font:700 18px/1.25 var(--f);color:var(--navy)}
-#or3d .or3d-legend .lg-x{appearance:none;flex:none;width:36px;height:36px;border:0;border-radius:50%;background:#f1eee7;color:var(--ink);font:400 22px/1 var(--f);cursor:pointer}
+#or3d .or3d-legend .lg-x{appearance:none;flex:none;width:36px;height:36px;border:0;border-radius:50%;background:#f1eee7;color:var(--ink);cursor:pointer}
 #or3d .or3d-legend ul{margin:6px 0 0;padding:0;list-style:none}
 #or3d .or3d-legend li{display:grid;grid-template-columns:46px 1fr;gap:14px;align-items:center;padding:8px 0;border-top:1px solid #efece6}
 #or3d .or3d-legend li:first-child{border-top:0}

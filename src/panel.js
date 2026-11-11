@@ -15,7 +15,7 @@ var ft=document.createElement('footer');ft.className='of-foot';ft.innerHTML=
 +(logo?'<a class="of-foot-logo" href="/" aria-label="Home"><img src="'+esc(logo.currentSrc||logo.src)+'" alt="'+esc(logo.getAttribute('alt')||'Home')+'"></a>':'')
 +(copy.length?'<p class="of-foot-copy">'+copy.map(esc).join('<br>')+'</p>':'')
 +(socials.length?'<div class="of-foot-social">'+socials.map(function(s){return '<a href="'+esc(s.h)+'" target="_blank" rel="noopener" aria-label="'+esc(s.l)+'"><img src="'+esc(s.src)+'" alt=""></a>';}).join('')+'</div>':'')
-+'<div class="of-foot-bottom">'+(eho?'<span class="of-foot-eho"><img src="'+esc(eho.currentSrc||eho.src)+'" alt="" loading="lazy">Equal Housing Opportunity</span>':'')+(rp?'<span class="of-foot-rpme"><img src="'+esc(rp.currentSrc||rp.src)+'" alt="'+esc(rp.getAttribute('alt')||'Real Property Management Express')+'" loading="lazy"></span>':'')+'</div>';
++'<div class="of-foot-bottom">'+(eho?'<span class="of-foot-eho"><img src="'+esc(eho.currentSrc||eho.src)+'" alt="Equal Housing Opportunity" loading="lazy"></span>':'')+(rp?'<span class="of-foot-rpme"><img src="'+esc(rp.currentSrc||rp.src)+'" alt="'+esc(rp.getAttribute('alt')||'Real Property Management Express')+'" loading="lazy"></span>':'')+'</div>';
 body.appendChild(ask);body.appendChild(ft);
 var panel=document.getElementById('panel');if(window.IntersectionObserver&&panel)new IntersectionObserver(function(es){es.forEach(function(e){root.classList.toggle('at-foot',e.isIntersecting);});},{root:panel,threshold:.15}).observe(ft);
 }
