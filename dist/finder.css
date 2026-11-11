@@ -151,6 +151,7 @@
 #or3d .pin .lo[data-tag]:hover{background:#8a5b30;color:#fff}
 #or3d .pin .lo+.lo{margin-left:5px}
 #or3d .ulabel{position:absolute;transform:translate(-50%,-50%);pointer-events:none;font-size:12px;font-weight:700;color:#1f2328;background:#ffffffe0;padding:2px 7px;border-radius:5px;white-space:nowrap}
+#or3d .ulabel.leased{color:#5d6470;background:#eef0f2e6}
 #or3d #tip{z-index:6;pointer-events:none;background:var(--surface);color:var(--ink);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:8px;padding:7px 10px;font-size:13px;line-height:1.35;display:none;max-width:240px}
 #or3d #tip b{font-size:14px}
 #or3d #ctrls{z-index:5;display:flex;align-items:center;gap:8px}
