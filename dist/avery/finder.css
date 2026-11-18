@@ -577,7 +577,7 @@ html.or3d-locked #or3d{min-height:0}
 #or3d .cc-box .tour-head{border-bottom:1px solid var(--line)}
 #or3d .cc-main{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr)}
 #or3d .cc-in{display:flex;flex-direction:column;gap:16px;padding:20px;background:var(--surface-2);border-right:1px solid var(--line)}
-#or3d .cc-in label,#or3d .cc-in .cc-lbl{display:flex;flex-direction:column;gap:6px;font:700 12.5px/1.2 var(--f);color:var(--muted)}
+#or3d .cc-in label,#or3d .cc-in .cc-lbl{display:flex;flex-direction:column;gap:6px;font:700 14px/1.2 var(--f);color:var(--muted)}
 #or3d .cc-in select{appearance:auto;width:100%;padding:10px;border:1px solid var(--line);border-radius:calc(8px*var(--t2-rk,1));background:#fff;color:var(--ink);font:500 15px var(--f)}
 #or3d .cc-fixed{padding:10px 12px;border:1px solid var(--line);border-radius:calc(8px*var(--t2-rk,1));background:#fff;color:var(--ink);font:600 15px var(--f)}
 #or3d .cc-step{display:flex;align-items:center;gap:0;width:max-content;border:1px solid var(--line);border-radius:calc(8px*var(--t2-rk,1));background:#fff;overflow:hidden}
@@ -585,7 +585,7 @@ html.or3d-locked #or3d{min-height:0}
 #or3d .cc-step button:disabled{color:#b8bec6;cursor:default}
 #or3d .cc-step output{min-width:44px;text-align:center;font:700 16px var(--f);color:var(--ink)}
 #or3d .cc-opt{display:flex;flex-direction:column;gap:8px;margin:0;padding:0;border:0}
-#or3d .cc-opt legend{padding:0;margin:0 0 2px;font:700 12.5px/1.2 var(--f);color:var(--muted)}
+#or3d .cc-opt legend{padding:0;margin:0 0 2px;font:700 14px/1.2 var(--f);color:var(--muted)}
 #or3d .cc-opt label{flex-direction:row;align-items:center;gap:9px;font:500 14px/1.3 var(--f);color:var(--ink);cursor:pointer}
 #or3d .cc-opt input{width:17px;height:17px;margin:0;accent-color:var(--navy)}
 #or3d .cc-opt small{margin-left:auto;color:var(--muted);font-weight:600}

@@ -12,7 +12,7 @@ function niceDate(iso){ var p=iso.split('-'); return MONTHS[+p[1]-1]+' '+(+p[2])
 function serviceFee(S,rooms){ var t=S.service||[]; for(var i=0;i<t.length;i++){ if(rooms<=t[i][0]) return t[i][1]; } return 0; }
 function fees(a){
   var f=window.OR3D_FEES||{}, S=window.T2FEES, TF=(window.T2&&window.T2.fees)||{}, on=function(k){ return TF[k]!==false; };
-  var monthly=f.monthly, oneTime=f.oneTime, optional=f.optional||[], note=null;
+  var monthly=f.monthly, oneTime=f.oneTime, optional=f.optional||[], note=null, pets=f.pets||null;
   if(S){
     if(!monthly){ monthly=[];
       if(on('rbp')) monthly.push({name:'Resident Benefits Package', amount:S.rbp, sub:'Starting at $'+S.rbp+'; $50 or $'+S.rbpHigh+' depending on credit'});
@@ -21,10 +21,10 @@ function fees(a){
       if(on('holding')) oneTime.push({name:'Holding fee', amount:S.holding, sub:'Becomes your security deposit after move-in'});
       if(on('docSetup')) oneTime.push({name:'Documentation Setup Fee', amount:S.docSetup});
       if(on('service')&&a){ var rooms=Math.max(0,(+a.beds||0)+(+TF.carpetExtra||0)); oneTime.push({name:'Service fee', amount:serviceFee(S,rooms), sub:rooms?rooms+' carpeted room'+(rooms>1?'s':''):'No carpeted rooms'}); } }
-    if(on('petRent')&&!f.optional) optional=[{name:'Pet rent (1 cat or dog)', amount:S.petRent, oneTime:on('petFee')?{name:'Pet fee', amount:S.petFee}:null}].concat(optional);
+    if(on('petRent')&&!f.pets) pets={rent:S.petRent, fee:on('petFee')?S.petFee:0, other:on('petFee')?(S.petOther||0):0};
   }
   if(TF.utilities&&TF.utilities!=='[Airtable]') note={name:'Utilities', value:TF.utilities, sub:TF.utilitiesDesc||''};
-  return {appFee:+f.appFee||(window.T2&&+window.T2.appFee)||(S&&S.appFee)||0, monthly:monthly||[], optional:optional, oneTime:oneTime||[], utilities:note};
+  return {appFee:+f.appFee||(window.T2&&+window.T2.appFee)||(S&&S.appFee)||0, monthly:monthly||[], optional:optional, oneTime:oneTime||[], utilities:note, pets:pets};
 }
 function sum(list){ return list.reduce(function(t,x){ return t+(+x.amount||0); },0); }
 function unitData(a){ var P=window.OR3D_PRICING; return P&&P.units&&P.units[a.id]||null; }
@@ -76,6 +76,9 @@ function build(root){
     renderOut();
   });
   box.addEventListener('click',function(e){
+    var pb=e.target.closest('[data-ccp]');
+    if(pb&&cur){ var k=pb.dataset.ccp.split(':'); cur[k[0]]=Math.max(0,Math.min(4,cur[k[0]]+(+k[1]))); renderIn(); renderOut();
+      var pa=box.querySelector('[data-ccp="'+pb.dataset.ccp+'"]'); if(pa&&!pa.disabled) pa.focus(); return; }
     var s=e.target.closest('[data-ccn]'); if(!s||!cur) return;
     cur.n=Math.max(1,Math.min(6,cur.n+(+s.dataset.ccn))); renderIn(); renderOut();
     var again=box.querySelector('[data-ccn="'+s.dataset.ccn+'"]'); if(again&&!again.disabled) again.focus();
@@ -93,7 +96,7 @@ function pick12(t){ var m=t.filter(function(x){ return x.months===12; })[0]||t[t
 function open(a){
   if(!a) return;
   var d=datesFor(a);
-  cur={a:a, date:d[0]||'', n:1, opt:{}};
+  cur={a:a, date:d[0]||'', n:1, opt:{}, cats:0, others:0};
   cur.months=pick12(termsFor(a,cur.date));
   box.querySelector('#ccTitle').innerHTML='Estimate Your Cost <span>'+esc(a.nice)+', apartment '+esc(a.b.num+'-'+a.unit)+'</span>';
   box.querySelector('.cc-demo').hidden=!isDemo(a);
@@ -108,24 +111,29 @@ function renderIn(){
   if(t.length>1) h+='<label>Lease length<select id="ccTerm">'+t.map(function(x){ return '<option value="'+x.months+'"'+(x.months===cur.months?' selected':'')+'>'+x.months+' months, '+fmt(x.rent)+' base rent</option>'; }).join('')+'</select></label>';
   else h+='<div class="cc-lbl">Lease length<span class="cc-fixed">'+t[0].months+' months</span></div>';
   if(F.appFee) h+='<div class="cc-lbl" id="ccNl">Number of applicants<span class="cc-step" role="group" aria-labelledby="ccNl"><button type="button" data-ccn="-1" aria-label="One fewer applicant"'+(cur.n<=1?' disabled':'')+'>&minus;</button><output>'+cur.n+'</output><button type="button" data-ccn="1" aria-label="One more applicant"'+(cur.n>=6?' disabled':'')+'>+</button></span></div>';
+  if(F.pets){ var step=function(k,label,id){ return '<div class="cc-lbl" id="'+id+'">'+label+'<span class="cc-step" role="group" aria-labelledby="'+id+'"><button type="button" data-ccp="'+k+':-1" aria-label="One fewer"'+(cur[k]<=0?' disabled':'')+'>&minus;</button><output>'+cur[k]+'</output><button type="button" data-ccp="'+k+':1" aria-label="One more"'+(cur[k]>=4?' disabled':'')+'>+</button></span></div>'; };
+    h+='<fieldset class="cc-opt cc-pets"><legend>Pets</legend>'+step('cats','Cats or dogs','ccPc')+step('others','Other pets','ccPo')+'</fieldset>'; }
   if(F.optional.length) h+='<fieldset class="cc-opt"><legend>Optional add-ons</legend>'+F.optional.map(function(o,i){ return '<label><input type="checkbox" name="ccOpt" value="'+i+'"'+(cur.opt[i]?' checked':'')+'>'+esc(o.name)+'<small>'+fmt(o.amount)+'/mo</small></label>'; }).join('')+'</fieldset>';
   box.querySelector('#ccIn').innerHTML=h;
 }
 function renderOut(){
   var a=cur.a, F=fees(a), t=termsFor(a,cur.date), term=t.filter(function(x){ return x.months===cur.months; })[0]||t[0];
   var rent=+term.rent, req=sum(F.monthly), total=rent+req;
-  var opts=F.optional.filter(function(o,i){ return cur.opt[i]; }), optSum=sum(opts);
+  var opts=F.optional.filter(function(o,i){ return cur.opt[i]; }), P=F.pets, petOnce=null;
+  if(P&&cur.cats) opts=opts.concat([{name:'Pet rent ('+cur.cats+' cat'+(cur.cats>1?'s or dogs':' or dog')+')', amount:P.rent*cur.cats}]);
+  if(P&&(cur.cats||cur.others)){ var pf=cur.cats?P.fee:Math.min(P.fee,P.other*cur.others); if(pf) petOnce={name:'Pet fee', amount:pf, sub:cur.cats?'Per home for cats and dogs':'$'+P.other+' per pet, up to $'+P.fee+' per home'}; }
+  var optSum=sum(opts);
   var h='<div class="cc-sec"><h4>Monthly cost</h4><div class="cc-row"><span>Base rent, '+term.months+'-month lease</span><span>'+fmt(rent)+'</span></div>';
   F.monthly.forEach(function(x){ h+='<div class="cc-row"><span>'+esc(x.name)+(x.sub?'<small>'+esc(x.sub)+'</small>':'')+'</span><span>'+fmt(x.amount)+'</span></div>'; });
   if(F.utilities) h+='<div class="cc-row"><span>'+esc(F.utilities.name)+(F.utilities.sub?'<small>'+esc(F.utilities.sub)+'</small>':'')+'</span><span>'+esc(F.utilities.value)+'</span></div>';
   h+='<div class="cc-total"><span>Total monthly price</span><b>'+fmt(total)+'</b></div>';
-  if(opts.length){ opts.forEach(function(x){ h+='<div class="cc-row sub"><span>'+esc(x.name)+' (optional)</span><span>+'+fmt(x.amount)+'</span></div>'; });
-    h+='<div class="cc-total lite"><span>Monthly with add-ons</span><b>'+fmt(total+optSum)+'</b></div>'; }
+  if(opts.length){ opts.forEach(function(x){ h+='<div class="cc-row sub"><span>'+esc(x.name)+'</span><span>+'+fmt(x.amount)+'</span></div>'; });
+    h+='<div class="cc-total lite"><span>Monthly with pets and add-ons</span><b>'+fmt(total+optSum)+'</b></div>'; }
   h+='</div>';
   if(F.appFee){ var app=F.appFee*cur.n;
     h+='<div class="cc-sec"><h4>Due with your application</h4><div class="cc-row"><span>Application fee ('+fmt(F.appFee)+' per applicant'+(cur.n>1?' &times; '+cur.n:'')+')</span><span>'+fmt(app)+'</span></div></div>'; }
   h+='<div class="cc-sec"><h4>Due before move-in</h4>';
-  var once=F.oneTime.concat(opts.map(function(o){ return o.oneTime; }).filter(Boolean));
+  var once=F.oneTime.concat(opts.map(function(o){ return o.oneTime; }).filter(Boolean)).concat(petOnce?[petOnce]:[]);
   if(once.length){ once.forEach(function(x){ h+='<div class="cc-row"><span>'+esc(x.name)+(x.sub?'<small>'+esc(x.sub)+'</small>':'')+'</span><span>'+fmt(x.amount)+'</span></div>'; });
     h+='<div class="cc-total lite"><span>Estimated move-in cost</span><b>'+fmt(sum(once))+'</b></div>'; }
   else h+='<p class="cc-empty">Our team will confirm your security deposit and any move-in costs when you apply.</p>';
