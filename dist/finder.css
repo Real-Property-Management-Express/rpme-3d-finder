@@ -590,6 +590,7 @@ html.or3d-locked #or3d{min-height:0}
 #or3d .cc-row{display:flex;justify-content:space-between;gap:16px;padding:5px 0;font:400 15px/1.35 var(--f);color:var(--ink)}
 #or3d .cc-row span:last-child{font-weight:600;white-space:nowrap}
 #or3d .cc-row.sub{color:var(--muted);font-size:14px}
+#or3d .cc-row small{display:block;margin-top:2px;color:var(--muted);font:400 14px/1.35 var(--f)}
 #or3d .cc-total{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin-top:8px;padding:12px 14px;border-radius:calc(10px*var(--t2-rk,1));background:var(--navy);color:#fff}
 #or3d .cc-total span{font:600 15px var(--f)}
 #or3d .cc-total b{font:800 24px/1 var(--f)}

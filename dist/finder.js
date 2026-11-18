@@ -943,7 +943,23 @@ var cur=null, back=null, box=null;
 function fmt(n){ n=Math.round((+n||0)*100)/100; return '$'+n.toLocaleString('en-US',{minimumFractionDigits:n%1?2:0,maximumFractionDigits:2}); }
 function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
 function niceDate(iso){ var p=iso.split('-'); return MONTHS[+p[1]-1]+' '+(+p[2])+', '+p[0]; }
-function fees(){ var f=window.OR3D_FEES||{}; return {appFee:+f.appFee||0, monthly:f.monthly||[], optional:f.optional||[], oneTime:f.oneTime||[]}; }
+function serviceFee(S,rooms){ var t=S.service||[]; for(var i=0;i<t.length;i++){ if(rooms<=t[i][0]) return t[i][1]; } return 0; }
+function fees(a){
+  var f=window.OR3D_FEES||{}, S=window.T2FEES, TF=(window.T2&&window.T2.fees)||{}, on=function(k){ return TF[k]!==false; };
+  var monthly=f.monthly, oneTime=f.oneTime, optional=f.optional||[], note=null;
+  if(S){
+    if(!monthly){ monthly=[];
+      if(on('rbp')) monthly.push({name:'Resident Benefits Package', amount:S.rbp, sub:'Starting at $'+S.rbp+'; $50 or $'+S.rbpHigh+' depending on credit'});
+      if(on('ltl')) monthly.push({name:'Liability to Landlord Insurance', amount:S.ltl}); }
+    if(!oneTime){ oneTime=[];
+      if(on('holding')) oneTime.push({name:'Holding fee', amount:S.holding, sub:'Becomes your security deposit after move-in'});
+      if(on('docSetup')) oneTime.push({name:'Documentation Setup Fee', amount:S.docSetup});
+      if(on('service')&&a){ var rooms=Math.max(0,(+a.beds||0)+(+TF.carpetExtra||0)); oneTime.push({name:'Service fee', amount:serviceFee(S,rooms), sub:rooms?rooms+' carpeted room'+(rooms>1?'s':''):'No carpeted rooms'}); } }
+    if(on('petRent')&&!f.optional) optional=[{name:'Pet rent (1 cat or dog)', amount:S.petRent, oneTime:on('petFee')?{name:'Pet fee', amount:S.petFee}:null}].concat(optional);
+  }
+  if(TF.utilities&&TF.utilities!=='[Airtable]') note={name:'Utilities', value:TF.utilities, sub:TF.utilitiesDesc||''};
+  return {appFee:+f.appFee||(window.T2&&+window.T2.appFee)||(S&&S.appFee)||0, monthly:monthly||[], optional:optional, oneTime:oneTime||[], utilities:note};
+}
 function sum(list){ return list.reduce(function(t,x){ return t+(+x.amount||0); },0); }
 function unitData(a){ var P=window.OR3D_PRICING; return P&&P.units&&P.units[a.id]||null; }
 function datesFor(a){ var u=unitData(a); return u&&u.byDate?Object.keys(u.byDate).sort():[]; }
@@ -1017,7 +1033,7 @@ function open(a){
 }
 function close(){ if(!box||box.hidden) return; box.hidden=true; cur=null; if(back&&back.focus&&document.contains(back)) back.focus(); }
 function renderIn(){
-  var a=cur.a, F=fees(), d=datesFor(a), t=termsFor(a,cur.date), h='';
+  var a=cur.a, F=fees(a), d=datesFor(a), t=termsFor(a,cur.date), h='';
   if(d.length) h+='<label>Move-in date<select id="ccDate">'+d.map(function(x){ return '<option value="'+x+'"'+(x===cur.date?' selected':'')+'>'+niceDate(x)+'</option>'; }).join('')+'</select></label>';
   if(t.length>1) h+='<label>Lease length<select id="ccTerm">'+t.map(function(x){ return '<option value="'+x.months+'"'+(x.months===cur.months?' selected':'')+'>'+x.months+' months, '+fmt(x.rent)+' base rent</option>'; }).join('')+'</select></label>';
   else h+='<div class="cc-lbl">Lease length<span class="cc-fixed">'+t[0].months+' months</span></div>';
@@ -1026,11 +1042,12 @@ function renderIn(){
   box.querySelector('#ccIn').innerHTML=h;
 }
 function renderOut(){
-  var a=cur.a, F=fees(), t=termsFor(a,cur.date), term=t.filter(function(x){ return x.months===cur.months; })[0]||t[0];
+  var a=cur.a, F=fees(a), t=termsFor(a,cur.date), term=t.filter(function(x){ return x.months===cur.months; })[0]||t[0];
   var rent=+term.rent, req=sum(F.monthly), total=rent+req;
   var opts=F.optional.filter(function(o,i){ return cur.opt[i]; }), optSum=sum(opts);
   var h='<div class="cc-sec"><h4>Monthly cost</h4><div class="cc-row"><span>Base rent, '+term.months+'-month lease</span><span>'+fmt(rent)+'</span></div>';
-  F.monthly.forEach(function(x){ h+='<div class="cc-row"><span>'+esc(x.name)+'</span><span>'+fmt(x.amount)+'</span></div>'; });
+  F.monthly.forEach(function(x){ h+='<div class="cc-row"><span>'+esc(x.name)+(x.sub?'<small>'+esc(x.sub)+'</small>':'')+'</span><span>'+fmt(x.amount)+'</span></div>'; });
+  if(F.utilities) h+='<div class="cc-row"><span>'+esc(F.utilities.name)+(F.utilities.sub?'<small>'+esc(F.utilities.sub)+'</small>':'')+'</span><span>'+esc(F.utilities.value)+'</span></div>';
   h+='<div class="cc-total"><span>Total monthly price</span><b>'+fmt(total)+'</b></div>';
   if(opts.length){ opts.forEach(function(x){ h+='<div class="cc-row sub"><span>'+esc(x.name)+' (optional)</span><span>+'+fmt(x.amount)+'</span></div>'; });
     h+='<div class="cc-total lite"><span>Monthly with add-ons</span><b>'+fmt(total+optSum)+'</b></div>'; }
@@ -1038,8 +1055,9 @@ function renderOut(){
   if(F.appFee){ var app=F.appFee*cur.n;
     h+='<div class="cc-sec"><h4>Due with your application</h4><div class="cc-row"><span>Application fee ('+fmt(F.appFee)+' per applicant'+(cur.n>1?' &times; '+cur.n:'')+')</span><span>'+fmt(app)+'</span></div></div>'; }
   h+='<div class="cc-sec"><h4>Due before move-in</h4>';
-  if(F.oneTime.length){ F.oneTime.forEach(function(x){ h+='<div class="cc-row"><span>'+esc(x.name)+'</span><span>'+fmt(x.amount)+'</span></div>'; });
-    h+='<div class="cc-total lite"><span>Estimated move-in cost</span><b>'+fmt(sum(F.oneTime))+'</b></div>'; }
+  var once=F.oneTime.concat(opts.map(function(o){ return o.oneTime; }).filter(Boolean));
+  if(once.length){ once.forEach(function(x){ h+='<div class="cc-row"><span>'+esc(x.name)+(x.sub?'<small>'+esc(x.sub)+'</small>':'')+'</span><span>'+fmt(x.amount)+'</span></div>'; });
+    h+='<div class="cc-total lite"><span>Estimated move-in cost</span><b>'+fmt(sum(once))+'</b></div>'; }
   else h+='<p class="cc-empty">Our team will confirm your security deposit and any move-in costs when you apply.</p>';
   h+='</div>';
   box.querySelector('#ccOut').innerHTML=h;
