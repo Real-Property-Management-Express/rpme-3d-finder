@@ -333,6 +333,18 @@ return {place:place,site:site,name:'The Avery',noYards:true,noBadge:true,noEntry
   }
   function yes(v){ v = String(v||'').trim().toLowerCase(); return v==='true' || v==='1' || v==='yes'; }
   function today(){ var d = new Date(); return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); }
+  function byDate(j){
+    if (Array.isArray(j)) return j.length ? {terms: j} : null;
+    if (!j || typeof j !== 'object') return null;
+    var by = {};
+    Object.keys(j).forEach(function(k){
+      var l = (Array.isArray(j[k]) ? j[k] : []).map(function(r, i){ return {months: i+1, rent: +r}; }).filter(function(x){ return x.rent > 0; });
+      var d = iso(k); if (d && l.length) by[d] = l;
+    });
+    var ks = Object.keys(by).sort(), future = ks.filter(function(k){ return k >= now; });
+    if (future.length && future.length < ks.length) { ks = future; var keep = {}; ks.forEach(function(k){ keep[k] = by[k]; }); by = keep; }
+    return ks.length ? {terms: by[ks[0]], byDate: by} : null;
+  }
   var rows = {}; (window.DIR||[]).forEach(function(r){ rows[r[0]+'-'+r[1]] = r; });
   var cms = {}, avail = {}, priced = {}, anyStatus = false, now = today();
   [].forEach.call(nodes, function(n){
@@ -342,7 +354,7 @@ return {place:place,site:site,name:'The Avery',noYards:true,noBadge:true,noEntry
     var rent = g('rent');
     if (rent !== '' && !isNaN(+rent.replace(/[$,]/g,'')) && rows[id]) rows[id][3] = +rent.replace(/[$,]/g,'');
     var t = g('terms');
-    if (t) { try { var list = JSON.parse(t); if (Array.isArray(list) && list.length) priced[id] = {terms: list}; } catch(e) {} }
+    if (t) { try { var p = byDate(JSON.parse(t)); if (p) priced[id] = p; } catch(e) {} }
     var s = g('status').toLowerCase(), d = iso(g('date'));
     if (s) anyStatus = true;
     if (s === 'available') avail[id] = d && d > now ? d : 'now';
