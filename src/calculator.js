@@ -64,9 +64,10 @@ function build(root){
     if(e.target===box||e.target.closest('[data-ccx]')){ close(); return; }
     var go=e.target.closest('[data-ccgo]'); if(!go||!cur) return;
     e.preventDefault();
-    var card=document.querySelector('#or3d .card [data-schedule="'+cur.a.id+'"]'), target=null;
+    var card=document.querySelector('#or3d .card [data-schedule="'+cur.a.id+'"]'), target=null, line=go.dataset.ccgo==='tour'?summary():'';
     if(card){ target=go.dataset.ccgo==='tour'?card:card.closest('.card').querySelector('.cta .pri'); }
     close(); if(target) target.click();
+    var msg=line&&document.querySelector('.or3d-sched #Message,.or3d-sched [name="Message"]'); if(msg) msg.value=(msg.value?msg.value+' ':'')+line;
   });
   box.addEventListener('change',function(e){
     if(!cur) return;
@@ -91,6 +92,14 @@ function build(root){
       if(e.shiftKey&&document.activeElement===first){ e.preventDefault(); last.focus(); }
       else if(!e.shiftKey&&document.activeElement===last){ e.preventDefault(); first.focus(); } }
   },true);
+}
+function summary(){
+  var t=termsFor(cur.a,cur.date), term=t.filter(function(x){ return x.months===cur.months; })[0]||t[0], pets=(cur.cats||0)+(cur.others||0), p=[];
+  if(cur.date) p.push('move-in '+niceDate(cur.date));
+  if(term) p.push(term.months+'-month lease at '+fmt(term.rent)+'/mo');
+  p.push(cur.n+' applicant'+(cur.n>1?'s':''));
+  p.push(pets?pets+' pet'+(pets>1?'s':''):'no pets');
+  return 'From my cost estimate: '+p.join(', ')+'.';
 }
 function pick12(t){ var m=t.filter(function(x){ return x.months===12; })[0]||t[t.length-1]; return m.months; }
 function open(a){

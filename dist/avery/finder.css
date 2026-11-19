@@ -157,6 +157,8 @@
 #or3d #ctrls{z-index:5;display:flex;align-items:center;gap:8px}
 #or3d .cbtn{appearance:none;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:600 13px var(--f);height:40px;padding:0 14px;border-radius:9px;box-shadow:0 6px 16px #00000024;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
 #or3d .cbtn svg{width:16px;height:16px}
+.cbtn[aria-pressed=true]{background:var(--navy);border-color:var(--navy);color:#fff}
+.cbtn[aria-pressed=true]:hover{background:var(--navy);color:#fff}
 #or3d .cbtn{transition:background-color .2s var(--t2-ease,ease),border-color .2s var(--t2-ease,ease),box-shadow .2s var(--t2-ease,ease),transform .2s var(--t2-ease,ease)}
 @media (hover:hover){
 #or3d .cbtn:hover{background:var(--surface-2);border-color:var(--navy);box-shadow:0 8px 20px #0000002e;transform:translateY(-1px)}
