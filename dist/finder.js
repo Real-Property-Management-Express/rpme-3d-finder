@@ -1050,8 +1050,8 @@ function close(){ if(!box||box.hidden) return; box.hidden=true; cur=null; if(bac
 function renderIn(){
   var a=cur.a, F=fees(a), d=datesFor(a), t=termsFor(a,cur.date), h='';
   if(d.length) h+='<label>Move-in date<select id="ccDate">'+d.map(function(x){ return '<option value="'+x+'"'+(x===cur.date?' selected':'')+'>'+niceDate(x)+'</option>'; }).join('')+'</select></label>';
-  if(t.length>1) h+='<label>Lease length<select id="ccTerm">'+t.map(function(x){ return '<option value="'+x.months+'"'+(x.months===cur.months?' selected':'')+'>'+x.months+' months, '+fmt(x.rent)+' base rent</option>'; }).join('')+'</select></label>';
-  else h+='<div class="cc-lbl">Lease length<span class="cc-fixed">'+t[0].months+' months</span></div>';
+  if(t.length>1) h+='<label>Lease length<select id="ccTerm">'+t.map(function(x){ return '<option value="'+x.months+'"'+(x.months===cur.months?' selected':'')+'>'+x.months+' month'+(x.months>1?'s':'')+', '+fmt(x.rent)+' base rent</option>'; }).join('')+'</select></label>';
+  else h+='<div class="cc-lbl">Lease length<span class="cc-fixed">'+t[0].months+' month'+(t[0].months>1?'s':'')+'</span></div>';
   if(F.appFee) h+='<div class="cc-lbl" id="ccNl">Number of applicants<span class="cc-step" role="group" aria-labelledby="ccNl"><button type="button" data-ccn="-1" aria-label="One fewer applicant"'+(cur.n<=1?' disabled':'')+'>&minus;</button><output>'+cur.n+'</output><button type="button" data-ccn="1" aria-label="One more applicant"'+(cur.n>=6?' disabled':'')+'>+</button></span></div>';
   if(F.pets){ var step=function(k,label,id){ return '<div class="cc-lbl" id="'+id+'">'+label+'<span class="cc-step" role="group" aria-labelledby="'+id+'"><button type="button" data-ccp="'+k+':-1" aria-label="One fewer"'+(cur[k]<=0?' disabled':'')+'>&minus;</button><output>'+cur[k]+'</output><button type="button" data-ccp="'+k+':1" aria-label="One more"'+(cur[k]>=4?' disabled':'')+'>+</button></span></div>'; };
     h+='<fieldset class="cc-opt cc-pets"><legend>Pets</legend>'+step('cats','Cats or dogs','ccPc')+step('others','Other pets','ccPo')+'</fieldset>'; }
