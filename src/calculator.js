@@ -16,7 +16,7 @@ function fees(a){
   if(S){
     if(!monthly){ monthly=[];
       if(on('rbp')) monthly.push({name:'Resident Benefits Package', amount:S.rbp, sub:'Starting at $'+S.rbp+'; $50 or $'+S.rbpHigh+' depending on credit'});
-      if(on('ltl')) monthly.push({name:'Liability to Landlord Insurance', amount:S.ltl}); }
+      if(on('ltl')) monthly.push({name:'Liability Waiver Program', amount:S.ltl, sub:'Not insurance. Waives your liability for accidental fire, smoke, explosion or water damage to your home'}); }
     if(!oneTime){ oneTime=[];
       if(on('holding')) oneTime.push({name:'Holding fee', amount:S.holding, sub:'Becomes your security deposit after move-in'});
       if(on('docSetup')) oneTime.push({name:'Documentation Setup Fee', amount:S.docSetup});
