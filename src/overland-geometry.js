@@ -54,7 +54,7 @@ var TOURS={0:'r6akUu2Da98',1:'pNaaNWvzqPP',2:'ygW9L37Guiz',3:'FQR6ZZqJstd'};
 var FP_SVG='<svg viewBox="0 0 48 40" aria-hidden="true"><rect x="3" y="3" width="42" height="34" rx="1.5"/><path d="M3 20h15M26 3v15M26 26v11M18 20v8M34 20h11"/><path d="M18 28a8 8 0 0 1 8-8" stroke-dasharray="2 2.5"/></svg>';
 var IC_LIST='<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 5h10M7 10h10M7 15h10"/><circle cx="3.5" cy="5" r=".8"/><circle cx="3.5" cy="10" r=".8"/><circle cx="3.5" cy="15" r=".8"/></svg>';
 var IC_MAP='<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2 17 6v8l-7 4-7-4V6z"/><path d="M3 6l7 4 7-4M10 10v8"/></svg>';
-/* Plan view images (Reserve set, rendered from the VanDeWalle unit sheets) and, per floor-plate shape, the matrix from image pixels to plate feet (registered by outline match). Accessible N and O have no rendered plan yet. */
+/* Plan view images (Reserve set, rendered from the VanDeWalle unit sheets) and, per floor-plate shape, the matrix from image pixels to plate feet (registered by outline match). Accessible N and O are rendered from their own sheets (A2.17, A2.18) and keyed by shape:plan. */
 var PLANVIEW = {
 B:['https://cdn.prod.website-files.com/6adaad44213439df69218780/6b04872de085d68eabbe83b9_OVR_PLANVIEW_B.webp',873,1015],
 C:['https://cdn.prod.website-files.com/6adaad44213439df69218780/6b04872d51c9eef1b3eebe1f_OVR_PLANVIEW_C.webp',1354,938],
@@ -64,9 +64,13 @@ J:['https://cdn.prod.website-files.com/6adaad44213439df69218780/6b04872ddca7ec0a
 K:['https://cdn.prod.website-files.com/6adaad44213439df69218780/6b04872d51c9eef1b3eebe55_OVR_PLANVIEW_K.webp',671,1406],
 L:['https://cdn.prod.website-files.com/6adaad44213439df69218780/6b04872d3181b94638f4a6c7_OVR_PLANVIEW_L.webp',1010,747],
 M:['https://cdn.prod.website-files.com/6adaad44213439df69218780/6b04872e4ba3279efc8b23c1_OVR_PLANVIEW_M.webp',1185,1504],
+O:['https://cdn.prod.website-files.com/6adaad44213439df69218780/6b049d23652796d6fad81434_OVR_PLANVIEW_O.webp',1395,979],
+N:['https://cdn.prod.website-files.com/6adaad44213439df69218780/6b049d247e186ad5d22616c9_OVR_PLANVIEW_N.webp',1244,1561],
 B2:['https://cdn.prod.website-files.com/6adaad44213439df69218780/6b04872de085d68eabbe83b9_OVR_PLANVIEW_B.webp',873,1015]
 };
 var PLANVIEW_M = {
+'C:O':[0.03125,0,0,0.031227,20.7027,-1.73606],
+'D:N':[0.03125,0,0,0.030066,30.8904,15.9284],
 B:[0.03125,0,0,0.030164,-3.62809,2.17479],
 B2:[0.03125,0,0,-0.030164,-3.62809,61.8452],
 C:[0.03125,0,0,0.031231,21.3479,-1.09182],
@@ -77,6 +81,8 @@ K:[0.03125,0,0,0.032387,21.2762,1.29835],
 L:[0.03125,0,0,0.033146,32.0235,42.3994],
 M:[0.03125,0,0,0.030168,31.6004,16.6273]
 };
+/* Accessible units show their own plan in the apartment card too (the page's plan images use the standard plans). */
+var PLANCARD = {O:'https://cdn.prod.website-files.com/6adaad44213439df69218780/6b049d23652796d6fad81434_OVR_PLANVIEW_O.webp', N:'https://cdn.prod.website-files.com/6adaad44213439df69218780/6b049d247e186ad5d22616c9_OVR_PLANVIEW_N.webp'};
 var TYPES = {
 '14A': {
   label:'14 apartments',

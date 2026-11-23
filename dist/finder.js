@@ -63,9 +63,13 @@ J:['https://cdn.prod.website-files.com/6adaad44213439df69218780/6b04872ddca7ec0a
 K:['https://cdn.prod.website-files.com/6adaad44213439df69218780/6b04872d51c9eef1b3eebe55_OVR_PLANVIEW_K.webp',671,1406],
 L:['https://cdn.prod.website-files.com/6adaad44213439df69218780/6b04872d3181b94638f4a6c7_OVR_PLANVIEW_L.webp',1010,747],
 M:['https://cdn.prod.website-files.com/6adaad44213439df69218780/6b04872e4ba3279efc8b23c1_OVR_PLANVIEW_M.webp',1185,1504],
+O:['https://cdn.prod.website-files.com/6adaad44213439df69218780/6b049d23652796d6fad81434_OVR_PLANVIEW_O.webp',1395,979],
+N:['https://cdn.prod.website-files.com/6adaad44213439df69218780/6b049d247e186ad5d22616c9_OVR_PLANVIEW_N.webp',1244,1561],
 B2:['https://cdn.prod.website-files.com/6adaad44213439df69218780/6b04872de085d68eabbe83b9_OVR_PLANVIEW_B.webp',873,1015]
 };
 var PLANVIEW_M = {
+'C:O':[0.03125,0,0,0.031227,20.7027,-1.73606],
+'D:N':[0.03125,0,0,0.030066,30.8904,15.9284],
 B:[0.03125,0,0,0.030164,-3.62809,2.17479],
 B2:[0.03125,0,0,-0.030164,-3.62809,61.8452],
 C:[0.03125,0,0,0.031231,21.3479,-1.09182],
@@ -76,6 +80,7 @@ K:[0.03125,0,0,0.032387,21.2762,1.29835],
 L:[0.03125,0,0,0.033146,32.0235,42.3994],
 M:[0.03125,0,0,0.030168,31.6004,16.6273]
 };
+var PLANCARD = {O:'https://cdn.prod.website-files.com/6adaad44213439df69218780/6b049d23652796d6fad81434_OVR_PLANVIEW_O.webp', N:'https://cdn.prod.website-files.com/6adaad44213439df69218780/6b049d247e186ad5d22616c9_OVR_PLANVIEW_N.webp'};
 var TYPES = {
 '14A': {
   label:'14 apartments',
@@ -959,7 +964,7 @@ if(e.pointerType!=="mouse")return;var h=down?null:pickAt(e.clientX,e.clientY);va
 tip.style.display="block";tip.innerHTML="<b>"+b.name+"</b><br>"+TYPES[b.type].label;tip.style.left=Math.min(e.clientX-RR().left+14,VW()-250)+"px";tip.style.top=e.clientY-RR().top+14+"px"}else tip.style.display="none"});canvas.addEventListener("pointerleave",function(){tip.style.display="none"})
 ;canvas.addEventListener("pointerdown",function(e){down={x:e.clientX,y:e.clientY};hideHint()});canvas.addEventListener("pointerup",function(e){if(!down)return;var moved=Math.hypot(e.clientX-down.x,e.clientY-down.y);down=null;if(moved>6)return;var h=pickAt(e.clientX,e.clientY)
 ;if(h&&h.apt)selectApt(h.apt);else if(h&&h.bldg)focusBuilding(h.bldg)});canvas.addEventListener("keydown",function(e){if(e.key==="Escape"){if(state.bldg)overview()}});document.addEventListener("keydown",function(e){if(e.key==="Escape"&&state.bldg&&document.activeElement!==canvas)overview()})
-;var FLOORPLANS=window.OR3D_FP||{};function fpUrl(a){return FLOORPLANS[a.fpk]||FLOORPLANS[a.pkey]||""}function fpThumb(a){var u=fpUrl(a);return u?'<img src="'+u+'" alt="" loading="lazy">':'<span class="fp-ph">'+FP_SVG+"</span>"}function fpBig(a){var u=fpUrl(a)
+;var FLOORPLANS=window.OR3D_FP||{};function fpUrl(a){var o=typeof PLANCARD!=="undefined"&&PLANCARD?PLANCARD[a.pkey]:"";return o||FLOORPLANS[a.fpk]||FLOORPLANS[a.pkey]||""}function fpThumb(a){var u=fpUrl(a);return u?'<img src="'+u+'" alt="" loading="lazy">':'<span class="fp-ph">'+FP_SVG+"</span>"}function fpBig(a){var u=fpUrl(a)
 ;return u?'<button type="button" class="fpbig" data-fpopen="'+a.id+'" aria-label="View the '+a.nice+' floor plan larger"><img src="'+u+'" alt="'+a.nice+' floor plan"></button>':'<div class="fpbig ph"><span class="fp-ph">'+FP_SVG+"<small>Floor plan coming soon</small></span></div>"}var fpReturn=null
 ;function openFP(a){var u=fpUrl(a);if(!u)return;$("fpTitle").innerHTML="Floor plan <span>"+a.nice+"</span>";$("fpImg").src=u;$("fpImg").alt=a.nice+" floor plan at "+(PK.name||"Overland Reserve")+"";fpReturn=document.activeElement;$("fpbox").hidden=false;$("fpClose").focus()}function closeFP(){
 if($("fpbox").hidden)return;$("fpbox").hidden=true;if(fpReturn&&fpReturn.focus)fpReturn.focus()}$("panel").addEventListener("click",function(e){var f=e.target.closest("[data-fpopen]");if(f){openFP(BYID[f.dataset.fpopen]);return}if(e.target.closest("[data-see3d]"))setMView("map")})
@@ -986,7 +991,7 @@ var mob=isMobile(),mr=PL.getBoundingClientRect(),pr=FPK&&FPK.offsetParent?FPK.ge
 ;var k=Math.min((cw-pl-prr)/b.W,(ch-pt-pb)/b.D);if(!(k>0))return;var ox=pl+(cw-pl-prr-b.W*k)/2,oy=pt+(ch-pt-pb-b.D*k)/2;function P(p){return(ox+p[0]*k).toFixed(1)+","+(oy+p[1]*k).toFixed(1)}
 PS.setAttribute("viewBox","0 0 "+cw+" "+ch);var svg='<rect class="p2-bldg" x="'+(ox-4)+'" y="'+(oy-4)+'" width="'+(b.W*k+8)+'" height="'+(b.D*k+8)+'" rx="4"/>',lab=[]
 ;b.spaces.filter(function(s){return s.floor===fi}).forEach(function(s){svg+='<polygon class="p2-s'+(s.nm?" nm":"")+'" points="'+slotPts(s).map(P).join(" ")+'"'+(s.nm?' style="fill:'+SPACE_COLOR+'"':"")+"/>";if(s.nm)lab.push({q:s,h:'<b>'+s.nm+"</b>",dk:darkFill(SPACE_COLOR)});else if(/stair|hall/i.test(s.label))lab.push({q:s,h:"<span>"+(/stair/i.test(s.label)?"Stairs &amp; hall":"Hall")+"</span>",c:"hall"})})
-;var pvs="",us="",PV=window.PLANVIEW||(typeof PLANVIEW!=="undefined"?PLANVIEW:null),PVM=typeof PLANVIEW_M!=="undefined"?PLANVIEW_M:null;b.apts.filter(function(a){return a.floor===fi}).forEach(function(a){var on=matches(a),lz=!on&&!a.hide&&!listed(a)&&!f,fill=hexOf(lz?LEASED:aptColor(a,on)),im=PV&&PVM&&PV[a.pkey]&&PVM[a.rk];if(im){var M=PVM[a.rk],I=PV[a.pkey];pvs+='<image class="p2-img" href="'+I[0]+'" width="'+I[1]+'" height="'+I[2]+'" preserveAspectRatio="none" transform="matrix('+[k*M[0],k*M[1],k*M[2],k*M[3],ox+k*M[4],oy+k*M[5]].map(function(v){return v.toFixed(4)}).join(" ")+')"/>'}us+='<polygon class="p2-u'+(im?" pv":"")+(on||lz?"":" dim")+(lz?" lz":"")+(state.sel===a?" sel":"")+(state.hover===a?" hot":"")+'" data-id="'+a.id+'" points="'+slotPts(a).map(P).join(" ")+'" style="fill:'+fill+'"'+(on||lz?' tabindex="0" role="button" aria-label="Apartment '+a.unit+", "+(lz?"leased":a.nice+", "+money(a.rent))+'"':"")+"/>"
+;var pvs="",us="",PV=window.PLANVIEW||(typeof PLANVIEW!=="undefined"?PLANVIEW:null),PVM=typeof PLANVIEW_M!=="undefined"?PLANVIEW_M:null;b.apts.filter(function(a){return a.floor===fi}).forEach(function(a){var on=matches(a),lz=!on&&!a.hide&&!listed(a)&&!f,fill=hexOf(lz?LEASED:aptColor(a,on)),pm=PVM&&(PVM[a.rk+":"+a.pkey]||PVM[a.rk]),im=PV&&pm&&PV[a.pkey];if(im){var M=pm,I=PV[a.pkey];pvs+='<image class="p2-img" href="'+I[0]+'" width="'+I[1]+'" height="'+I[2]+'" preserveAspectRatio="none" transform="matrix('+[k*M[0],k*M[1],k*M[2],k*M[3],ox+k*M[4],oy+k*M[5]].map(function(v){return v.toFixed(4)}).join(" ")+')"/>'}us+='<polygon class="p2-u'+(im?" pv":"")+(on||lz?"":" dim")+(lz?" lz":"")+(state.sel===a?" sel":"")+(state.hover===a?" hot":"")+'" data-id="'+a.id+'" points="'+slotPts(a).map(P).join(" ")+'" style="fill:'+fill+'"'+(on||lz?' tabindex="0" role="button" aria-label="Apartment '+a.unit+", "+(lz?"leased":a.nice+", "+money(a.rent))+'"':"")+"/>"
 ;lab.push({q:a,h:"<b>"+a.unit+"</b>"+(on?"<span>"+a.nice+"</span>":lz?"<span>Leased</span>":""),dk:!im&&(on||lz)&&darkFill(fill),c:im?"pill":""})});PS.innerHTML=svg+pvs+us
 ;PLL.innerHTML='<div class="p2-cap" style="left:'+(ox+b.W*k/2).toFixed(1)+"px;top:"+Math.max(8,oy-48).toFixed(1)+'px">'+b.name+" &middot; "+ORD(fi+b.base)+" floor</div>"+lab.map(function(l){var L=labPt(l.q),w=L[2]*k,h=L[3]*k;return'<div class="p2-l'+(l.dk?" dk":"")+(l.c?" "+l.c:"")+(w<88||h<46?" sm":"")+'" style="left:'+(ox+L[0]*k).toFixed(1)+"px;top:"+(oy+L[1]*k).toFixed(1)+"px;max-width:"+Math.max(40,w-8).toFixed(0)+'px">'+l.h+"</div>"}).join("")}
 function labPt(rec){if(rec.lp)return rec.lp;var r=rec.r,pg=rec.poly;if(!pg)return rec.lp=[(r[0]+r[2])/2,(r[1]+r[3])/2,r[2]-r[0],r[3]-r[1]];function cut(x,z,hz){var lo=-1e9,hi=1e9,n=0;pg.forEach(function(p,i){var q=pg[(i+1)%pg.length],a0=hz?p[1]:p[0],a1=hz?q[1]:q[0],b0=hz?p[0]:p[1],b1=hz?q[0]:q[1],v=hz?z:x,u=hz?x:z;if((a0>v)===(a1>v))return;var c=b0+(v-a0)/(a1-a0)*(b1-b0);if(c<u){lo=Math.max(lo,c);n++}else hi=Math.min(hi,c)});return n%2?[lo,hi]:null}
