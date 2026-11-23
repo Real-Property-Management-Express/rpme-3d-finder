@@ -25,9 +25,20 @@ function bedColor(b){ return BEDS[b].color; }
 function bedText(p){ return p.beds===0 ? 'Studio' : p.beds+' bed'; }
 var W = 64.5, D = 62.5, FH = 10.5, H = FH*3;
 var RECT = {
-BL:[0,0,22.3,31], FL:[0,31,22.3,62.5],
-KC:[22.3,0,40.5,21], IR:[40.5,0,64.5,21], JR:[40.5,21,64.5,41], LR:[40.5,41,64.5,62.5],
-TOP:[22.3,0,64.5,21], RIGHT:[40.5,21,64.5,62.5], CORE:[22.3,21,40.5,62.5]
+B:[[0,3],[11,3],[11,5],[22.44,5],[22.44,32.02],[2,32.02],[2,17.1],[0,17.1]],
+B2:[[2,32.02],[22.44,32.02],[22.44,60.3],[0,60.3],[0,46.7],[2,46.7]],
+K:[[22.44,5],[37.18,5],[37.18,26.78],[41.25,26.78],[41.25,43.29],[32.87,43.29],[32.87,33],[31.87,33],[31.87,26.82],[22.44,26.82]],
+I:[[37.18,3],[45.5,3],[45.5,0],[62.5,0],[62.5,17.79],[48.66,17.79],[48.66,26.78],[37.18,26.78]],
+J:[[41.25,26.78],[48.66,26.78],[48.66,17.79],[62.5,17.79],[62.5,39.9],[64.5,39.9],[64.5,47.39],[51.59,47.39],[51.59,43.29],[41.25,43.29]],
+L:[[32.87,43.29],[51.59,43.29],[51.59,47.39],[62.5,47.39],[62.5,60.3],[32.87,60.3]],
+CORE1:[[22.44,26.82],[31.87,26.82],[31.87,33],[32.87,33],[32.87,61.8],[22.44,61.8]],
+C:[[22.44,5],[36.6,5],[36.6,3],[45.5,3],[45.5,0],[62.5,0],[62.5,17.79],[48.66,17.79],[48.66,26.78],[22.44,26.78]],
+CORE2:[[22.44,26.78],[37.78,26.78],[37.78,32.77],[41.22,32.77],[41.22,43.42],[32.8,43.42],[32.8,61.8],[22.44,61.8]],
+M:[[37.78,26.78],[48.66,26.78],[48.66,17.79],[62.5,17.79],[62.5,39.9],[64.5,39.9],[64.5,47.39],[62.5,47.39],[62.5,60.3],[32.8,60.3],[32.8,43.42],[41.22,43.42],[41.22,32.77],[37.78,32.77]],
+CORE3:[[22.44,26.79],[37.84,26.79],[37.84,32.8],[32.82,32.8],[32.82,61.8],[22.44,61.8]],
+D:[[37.84,26.79],[48.66,26.79],[48.66,17.79],[62.5,17.79],[62.5,39.9],[64.5,39.9],[64.5,47.39],[62.5,47.39],[62.5,60.3],[32.82,60.3],[32.82,32.8],[37.84,32.8]],
+COMM:[[0,3],[11,3],[11,5],[22.44,5],[22.44,29.6],[2,29.6],[2,17.1],[0,17.1]],
+LOBBY:[[2,29.6],[22.44,29.6],[22.44,60.3],[0,60.3],[0,46.7],[2,46.7]]
 };
 var IC={
 bed:'<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1.5 13V4.5M1.5 10h13v3M14.5 10V8.5a1.5 1.5 0 0 0-1.5-1.5H7v3M4.2 9a1.2 1.2 0 1 0 0-2.4 1.2 1.2 0 0 0 0 2.4z"/></svg>',
@@ -45,21 +56,21 @@ var IC_LIST='<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7 5h10M7 10h1
 var IC_MAP='<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2 17 6v8l-7 4-7-4V6z"/><path d="M3 6l7 4 7-4M10 10v8"/></svg>';
 var TYPES = {
 '14A': {
-label:'14 apartments',
-floors:[
-[{p:'B',u:'01',r:'BL'},{p:'B2',u:'02',r:'FL'},{p:'K',u:'03',r:'KC'},{p:'L',u:'04',r:'LR'},{p:'J',u:'05',r:'JR'},{p:'I',u:'06',r:'IR'},{a:'Stairs and hallway',r:'CORE'}],
-[{p:'B',u:'01',r:'BL'},{p:'B2',u:'02',r:'FL'},{p:'C',u:'03',r:'TOP'},{p:'M',u:'04',r:'RIGHT'},{a:'Stairs and hallway',r:'CORE'}],
-[{p:'B',u:'01',r:'BL'},{p:'B2',u:'02',r:'FL'},{p:'C',u:'03',r:'TOP'},{p:'D',u:'04',r:'RIGHT'},{a:'Stairs and hallway',r:'CORE'}]
-]
+  label:'14 apartments',
+  floors:[
+    [{p:'B',u:'01',r:'B'},{p:'B2',u:'02',r:'B2'},{p:'K',u:'03',r:'K'},{p:'L',u:'04',r:'L'},{p:'J',u:'05',r:'J'},{p:'I',u:'06',r:'I'},{a:'Stairs and hallway',r:'CORE1'}],
+    [{p:'B',u:'01',r:'B'},{p:'B2',u:'02',r:'B2'},{p:'C',u:'03',r:'C'},{p:'M',u:'04',r:'M'},{a:'Stairs and hallway',r:'CORE2'}],
+    [{p:'B',u:'01',r:'B'},{p:'B2',u:'02',r:'B2'},{p:'C',u:'03',r:'C'},{p:'D',u:'04',r:'D'},{a:'Stairs and hallway',r:'CORE3'}]
+  ]
 },
 '10B': {
-label:'10 apartments, leasing office and community room',
-office:true,
-floors:[
-[{a:'Community room',r:'BL'},{a:'Leasing office, lobby and mail',r:'FL'},{p:'O',u:'01',r:'TOP'},{p:'N',u:'02',r:'RIGHT'},{a:'Stairs and hallway',r:'CORE'}],
-[{p:'B',u:'01',r:'BL'},{p:'B2',u:'02',r:'FL'},{p:'C',u:'03',r:'TOP'},{p:'M',u:'04',r:'RIGHT'},{a:'Stairs and hallway',r:'CORE'}],
-[{p:'B',u:'01',r:'BL'},{p:'B2',u:'02',r:'FL'},{p:'C',u:'03',r:'TOP'},{p:'D',u:'04',r:'RIGHT'},{a:'Stairs and hallway',r:'CORE'}]
-]
+  label:'10 apartments, leasing office and community room',
+  office:true,
+  floors:[
+    [{a:'Community room',r:'COMM'},{a:'Leasing office, lobby and mail',r:'LOBBY'},{p:'O',u:'01',r:'C'},{p:'N',u:'02',r:'D'},{a:'Stairs and hallway',r:'CORE3'}],
+    [{p:'B',u:'01',r:'B'},{p:'B2',u:'02',r:'B2'},{p:'C',u:'03',r:'C'},{p:'M',u:'04',r:'M'},{a:'Stairs and hallway',r:'CORE2'}],
+    [{p:'B',u:'01',r:'B'},{p:'B2',u:'02',r:'B2'},{p:'C',u:'03',r:'C'},{p:'D',u:'04',r:'D'},{a:'Stairs and hallway',r:'CORE3'}]
+  ]
 }
 };
 function rnd(a,b){ return a+Math.random()*(b-a); }
@@ -1139,10 +1150,12 @@ function plan2d(){if(!PL)return;var on=!!(state.v2d&&state.bldg);ROOTEL.classLis
 var mob=isMobile(),mr=PL.getBoundingClientRect(),pr=FPK&&FPK.offsetParent?FPK.getBoundingClientRect():null,pl=pr&&!mob?Math.max(24,pr.right-mr.left+24):16,pt=pr&&mob?pr.bottom-mr.top+14:72,pb=mob?(state.sel?270:96):80,prr=mob?16:32
 ;var k=Math.min((cw-pl-prr)/b.W,(ch-pt-pb)/b.D);if(!(k>0))return;var ox=pl+(cw-pl-prr-b.W*k)/2,oy=pt+(ch-pt-pb-b.D*k)/2;function P(p){return(ox+p[0]*k).toFixed(1)+","+(oy+p[1]*k).toFixed(1)}
 PS.setAttribute("viewBox","0 0 "+cw+" "+ch);var svg='<rect class="p2-bldg" x="'+(ox-4)+'" y="'+(oy-4)+'" width="'+(b.W*k+8)+'" height="'+(b.D*k+8)+'" rx="4"/>',lab=[]
-;b.spaces.filter(function(s){return s.floor===fi}).forEach(function(s){svg+='<polygon class="p2-s'+(s.nm?" nm":"")+'" points="'+slotPts(s).map(P).join(" ")+'"'+(s.nm?' style="fill:'+SPACE_COLOR+'"':"")+"/>";if(s.nm)lab.push({r:s.r,h:'<b>'+s.nm+"</b>",dk:darkFill(SPACE_COLOR)});else if(/stair|hall/i.test(s.label))lab.push({r:s.r,h:"<span>"+(/stair/i.test(s.label)?"Stairs &amp; hall":"Hall")+"</span>",c:"hall"})})
+;b.spaces.filter(function(s){return s.floor===fi}).forEach(function(s){svg+='<polygon class="p2-s'+(s.nm?" nm":"")+'" points="'+slotPts(s).map(P).join(" ")+'"'+(s.nm?' style="fill:'+SPACE_COLOR+'"':"")+"/>";if(s.nm)lab.push({q:s,h:'<b>'+s.nm+"</b>",dk:darkFill(SPACE_COLOR)});else if(/stair|hall/i.test(s.label))lab.push({q:s,h:"<span>"+(/stair/i.test(s.label)?"Stairs &amp; hall":"Hall")+"</span>",c:"hall"})})
 ;b.apts.filter(function(a){return a.floor===fi}).forEach(function(a){var on=matches(a),lz=!on&&!a.hide&&!listed(a)&&!f,fill=hexOf(lz?LEASED:aptColor(a,on));svg+='<polygon class="p2-u'+(on||lz?"":" dim")+(lz?" lz":"")+(state.sel===a?" sel":"")+(state.hover===a?" hot":"")+'" data-id="'+a.id+'" points="'+slotPts(a).map(P).join(" ")+'" style="fill:'+fill+'"'+(on||lz?' tabindex="0" role="button" aria-label="Apartment '+a.unit+", "+(lz?"leased":a.nice+", "+money(a.rent))+'"':"")+"/>"
-;lab.push({r:a.r,h:"<b>"+a.unit+"</b>"+(on?"<span>"+a.nice+"</span>":lz?"<span>Leased</span>":""),dk:(on||lz)&&darkFill(fill)})});PS.innerHTML=svg
-;PLL.innerHTML='<div class="p2-cap" style="left:'+(ox+b.W*k/2).toFixed(1)+"px;top:"+Math.max(8,oy-48).toFixed(1)+'px">'+b.name+" &middot; "+ORD(fi+b.base)+" floor</div>"+lab.map(function(l){var w=(l.r[2]-l.r[0])*k,h=(l.r[3]-l.r[1])*k;return'<div class="p2-l'+(l.dk?" dk":"")+(l.c?" "+l.c:"")+(w<88||h<46?" sm":"")+'" style="left:'+(ox+(l.r[0]+l.r[2])/2*k).toFixed(1)+"px;top:"+(oy+(l.r[1]+l.r[3])/2*k).toFixed(1)+"px;max-width:"+Math.max(40,w-8).toFixed(0)+'px">'+l.h+"</div>"}).join("")}
+;lab.push({q:a,h:"<b>"+a.unit+"</b>"+(on?"<span>"+a.nice+"</span>":lz?"<span>Leased</span>":""),dk:(on||lz)&&darkFill(fill)})});PS.innerHTML=svg
+;PLL.innerHTML='<div class="p2-cap" style="left:'+(ox+b.W*k/2).toFixed(1)+"px;top:"+Math.max(8,oy-48).toFixed(1)+'px">'+b.name+" &middot; "+ORD(fi+b.base)+" floor</div>"+lab.map(function(l){var L=labPt(l.q),w=L[2]*k,h=L[3]*k;return'<div class="p2-l'+(l.dk?" dk":"")+(l.c?" "+l.c:"")+(w<88||h<46?" sm":"")+'" style="left:'+(ox+L[0]*k).toFixed(1)+"px;top:"+(oy+L[1]*k).toFixed(1)+"px;max-width:"+Math.max(40,w-8).toFixed(0)+'px">'+l.h+"</div>"}).join("")}
+function labPt(rec){if(rec.lp)return rec.lp;var r=rec.r,pg=rec.poly;if(!pg)return rec.lp=[(r[0]+r[2])/2,(r[1]+r[3])/2,r[2]-r[0],r[3]-r[1]];function cut(x,z,hz){var lo=-1e9,hi=1e9,n=0;pg.forEach(function(p,i){var q=pg[(i+1)%pg.length],a0=hz?p[1]:p[0],a1=hz?q[1]:q[0],b0=hz?p[0]:p[1],b1=hz?q[0]:q[1],v=hz?z:x,u=hz?x:z;if((a0>v)===(a1>v))return;var c=b0+(v-a0)/(a1-a0)*(b1-b0);if(c<u){lo=Math.max(lo,c);n++}else hi=Math.min(hi,c)});return n%2?[lo,hi]:null}
+var best=null;for(var x=r[0]+.5;x<r[2];x+=.5)for(var z=r[1]+.5;z<r[3];z+=.5){var h=cut(x,z,1),v=cut(x,z,0);if(!h||!v)continue;var sc=Math.min(Math.min(x-h[0],h[1]-x)*2,Math.min(z-v[0],v[1]-z)*4);if(!best||sc>best[0])best=[sc,(h[0]+h[1])/2,z,h[1]-h[0],v[1]-v[0]]}return rec.lp=best?[best[1],best[2],best[3],best[4]]:[(r[0]+r[2])/2,(r[1]+r[3])/2,r[2]-r[0],r[3]-r[1]]}
 function plan2dHot(){if(!PS||PL.hidden)return;[].forEach.call(PS.querySelectorAll(".p2-u"),function(p){p.classList.toggle("hot",!!state.hover&&p.getAttribute("data-id")===state.hover.id)})}
 function pickerSync(){if(!FPK)return;var b=state.bldg||fpB||BLDGS[0];fpB=b;var sel=$("fpb");$("fpbw").hidden=BLDGS.length<2;if(sel.options.length!==BLDGS.length)sel.innerHTML=BLDGS.map(function(x){return'<option value="'+x.id+'">'+x.num+"</option>"}).join("");sel.value=String(b.id)
 ;var ff=$("fpf");if(ff.dataset.b!==String(b.id)){ff.dataset.b=b.id;ff.innerHTML=b.floorGroups.map(function(_,i){return'<button type="button" data-f="'+i+'">'+ORD(i+b.base)+"</button>"}).reverse().join("")}
