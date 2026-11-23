@@ -120,6 +120,7 @@ function aveShell(c){
     for(var z3=8;z3<45;z3+=8.5){ win(268-hw+.3,wy,z3-hd,Math.PI/2,4.6,6.4); }
   }
 }
+var PLANVIEW = null, PLANVIEW_M = null;
 var TYPES = {
 AVE: {
   label:'Apartments, lobby, clubroom and fitness',
