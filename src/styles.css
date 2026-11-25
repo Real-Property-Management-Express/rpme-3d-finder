@@ -655,37 +655,38 @@ html.or3d-locked #or3d{min-height:0}
 #or3d .p2-l.hall{color:var(--muted);font-weight:500}
 #or3d .p2-img{pointer-events:none}
 #or3d .p2-u.pv{fill-opacity:.18;stroke:var(--uc,var(--navy));stroke-width:9}
-#or3d .p2-uc{fill:none;stroke:var(--ink);stroke-width:13;pointer-events:none}
-#or3d .p2-uc.dim{stroke-opacity:.35}
+#or3d .p2-uo{fill:none;stroke:var(--ink);stroke-width:2.5;stroke-linejoin:miter;pointer-events:none}
+#or3d .p2-uo.dim{stroke-opacity:.35}
+#or3d .p2-uo.sel{stroke-width:5}
 #or3d .p2-u.pv.hot{fill-opacity:.32;filter:none}
 #or3d .p2-u.pv.lz{fill-opacity:.55}
 #or3d .p2-u.pv.dim{fill:var(--bg)!important;fill-opacity:.72;stroke-opacity:.5}
-#or3d .p2-u.pv.sel{fill-opacity:.12;stroke:var(--ink);stroke-width:13}
+#or3d .p2-u.pv.sel{fill-opacity:.1}
 #or3d .p2-l.pill{background:var(--surface);border:1px solid var(--line);border-radius:var(--t2-pill,999px);padding:4px 10px;box-shadow:0 2px 8px #0000001f;overflow:visible;max-width:none!important}
 #or3d .p2-l.pill b{display:inline;font-size:15px}
 #or3d .p2-l.pill span{display:inline;margin-left:6px;font-size:14px;color:var(--muted)}
 #or3d .p2-l.pill.sm span{display:none}
-#or3d .p2-cap{position:absolute;transform:translateX(-50%);white-space:nowrap;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:var(--t2-pill,999px);padding:9px 16px;font:600 15px/1 var(--f);box-shadow:0 6px 16px #0000001f}
 #or3d.v2d #labels,#or3d.v2d .hint,#or3d.v2d #zin,#or3d.v2d #zout,#or3d.v2d #compass,#or3d.v2d #unums,#or3d.v2d .or3d-dim,#or3d.v2d .or3d-turn{display:none}
-#or3d .fpick{position:absolute;left:16px;top:50%;transform:translateY(-50%);z-index:5;width:104px;display:flex;flex-direction:column;gap:6px;padding:8px;background:var(--surface);border:1px solid var(--line);border-radius:calc(12px*var(--t2-rk,1));box-shadow:0 6px 16px #00000024;font-family:var(--f)}
-#or3d .fpick .fp-b{display:flex;flex-direction:column;gap:4px;margin:0}
-#or3d .fpick .fp-b span,#or3d .fpick .fp-h{font:600 14px/1.2 var(--f);color:var(--muted);padding:2px 4px 0}
-#or3d .fpick select{width:100%;height:38px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);font:700 15px var(--f);padding:0 6px;cursor:pointer}
-#or3d .fpick .fp-f{display:flex;flex-direction:column;gap:2px}
-#or3d .fpick .fp-f button,#or3d .fpick .fp-v button{appearance:none;border:0;background:transparent;color:var(--ink);font:600 15px/1 var(--f);height:38px;border-radius:8px;cursor:pointer;transition:background-color .2s var(--t2-ease,ease),color .2s var(--t2-ease,ease)}
+#or3d .fpick{position:absolute;right:16px;top:0;z-index:5;display:flex;align-items:center;gap:10px;padding:6px 8px;background:var(--surface);border:1px solid var(--line);border-top:0;border-radius:0 0 calc(12px*var(--t2-rk,1)) calc(12px*var(--t2-rk,1));box-shadow:0 6px 16px #0000001f;font-family:var(--f);white-space:nowrap}
+#or3d .fpick .fp-b{display:flex;align-items:center;gap:6px;margin:0}
+#or3d .fpick .fp-b span,#or3d .fpick .fp-h{font:600 14px/1.2 var(--f);color:var(--muted);padding:0 0 0 4px}
+#or3d .fpick .fp-h{border-left:1px solid var(--line);padding-left:12px}
+#or3d .fpick select{width:84px;height:38px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);font:700 15px var(--f);padding:0 6px;cursor:pointer}
+#or3d .fpick .fp-f{display:flex;flex-direction:row-reverse;gap:2px}
+#or3d .fpick .fp-f button,#or3d .fpick .fp-v button{appearance:none;border:0;background:transparent;color:var(--ink);font:600 15px/1 var(--f);height:38px;padding:0 12px;border-radius:8px;cursor:pointer;transition:background-color .2s var(--t2-ease,ease),color .2s var(--t2-ease,ease)}
 #or3d .fpick .fp-f button:hover,#or3d .fpick .fp-v button:hover{background:var(--surface-2)}
 #or3d .fpick .fp-f button[aria-pressed=true],#or3d .fpick .fp-v button[aria-pressed=true]{background:var(--navy);color:#fff}
-#or3d .fpick .fp-v{display:grid;grid-template-columns:1fr 1fr;gap:2px;padding:3px;margin-top:2px;background:var(--surface-2);border-radius:9px}
-#or3d .fpick .fp-v button{height:32px;font-size:14px}
+#or3d .fpick .fp-v{display:grid;grid-template-columns:1fr 1fr;gap:2px;width:112px;padding:3px;margin-left:2px;background:var(--surface-2);border-radius:9px}
+#or3d .fpick .fp-v button{height:32px;font-size:14px;padding:0 6px}
 #or3d .fpick button:focus-visible,#or3d .fpick select:focus-visible{outline:2px solid var(--navy);outline-offset:1px}
 #or3d.ptour-on .fpick{display:none}
 @media (max-width:767px){
-  #or3d .fpick{left:12px;right:12px;top:60px;transform:none;width:auto;flex-direction:row;align-items:center;gap:4px;padding:5px}
+  #or3d .fpick{left:12px;right:12px;top:60px;transform:none;gap:4px;padding:5px;border-top:1px solid var(--line);border-radius:calc(12px*var(--t2-rk,1));white-space:normal}
   #or3d .fpick .fp-b span,#or3d .fpick .fp-h{display:none}
   #or3d .fpick select{width:84px;height:38px}
   #or3d .fpick .fp-f{flex:1;flex-direction:row-reverse;gap:2px}
   #or3d .fpick .fp-f button{flex:1;height:38px;min-width:0;padding:0 2px}
   #or3d .fpick .fp-v{margin:0;width:96px;flex:none}
-  #or3d .p2-cap{display:none}
+  #or3d .fpick .fp-h{border:0;padding:0}
   #or3d.v2d #mcard.bl{display:none}
 }

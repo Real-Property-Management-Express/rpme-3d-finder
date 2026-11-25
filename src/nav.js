@@ -54,7 +54,10 @@ var I={
  one:SV('<circle class="hl" stroke="none" cx="20" cy="20" r="5"/><path d="M20 4v7M17 7l3-3 3 3M20 36v-7M17 33l3 3 3-3M4 20h7M7 17l-3 3 3 3M36 20h-7M33 17l3 3-3 3"/>'),
  pinch:SV('<circle class="hl" stroke="none" cx="14" cy="26" r="4.5"/><circle class="hl" stroke="none" cx="26" cy="14" r="4.5"/><path d="M8 32l-4 4M4 30v6h6M32 8l4-4M30 4h6v6"/>'),
  twist:SV('<circle class="hl" stroke="none" cx="13" cy="20" r="4.5"/><circle class="hl" stroke="none" cx="27" cy="20" r="4.5"/><path d="M11 9a13 13 0 0 1 18 0M29 9l1-5M29 9l-5 0M29 31a13 13 0 0 1-18 0M11 31l-1 5M11 31h5"/>'),
- tap:SV('<circle class="hl" stroke="none" cx="20" cy="20" r="5"/><circle cx="20" cy="20" r="10"/><circle cx="20" cy="20" r="15" opacity=".45"/>')
+ tap:SV('<circle class="hl" stroke="none" cx="20" cy="20" r="5"/><circle cx="20" cy="20" r="10"/><circle cx="20" cy="20" r="15" opacity=".45"/>'),
+ floors:SV('<path class="hl" stroke="none" d="M20 6 5 13l15 7 15-7z"/><path d="M20 6 5 13l15 7 15-7z"/><path d="M5 20l15 7 15-7"/><path d="M5 27l15 7 15-7" opacity=".5"/>'),
+ plan:SV('<rect x="6" y="6" width="28" height="28" rx="2"/><path class="hl" stroke="none" d="M22 21h12v13H22z"/><path d="M6 20h12M22 6v10M22 24v10M18 20v6M22 21h12"/>'),
+ price:SV('<path d="M20 5v30M27 11h-9.5a4.5 4.5 0 0 0 0 9h5a4.5 4.5 0 0 1 0 9H12"/>')
 };
 var rows=mob()?[
  [I.one,'Move the map','Slide one finger across the map.'],
@@ -69,6 +72,8 @@ var rows=mob()?[
  [I.hand,'See the apartments','Click any building.'],
  [I.reset,'Start over','Press Reset view to go back to the full view.']
 ];
+if(document.getElementById('fpick')){rows.push([I.floors,'Pick a building and floor','Open a building, then use the bar at the top of the map to choose a building and a floor.'],[I.plan,'Plan or 3D','Plan shows the floor flat from above, with each apartment\u2019s floor plan drawn in its real shape. 3D shows the whole building.'],[mob()?I.tap:I.hand,'See an apartment',(mob()?'Tap':'Click')+' an apartment on the plan to see its price, size and 3D tour.']);}
+if(window.OR3D_LEASE&&OR3D_LEASE.base12)rows.push([I.price,'Rent shown','Prices are the base rent for a 12-month lease. We offer '+(OR3D_LEASE.terms?OR3D_LEASE.terms+' month':'other')+' leases, and rent varies by lease length.']);
 var lg=document.createElement('div');lg.className='or3d-legend';lg.id='or3dLegend';lg.setAttribute('role','dialog');lg.setAttribute('aria-labelledby','or3dLegendT');
 lg.innerHTML='<div class="lg-h"><b id="or3dLegendT">How to use the map</b><button type="button" class="lg-x" aria-label="Close">\u00d7</button></div><ul>'+rows.map(function(r){return '<li><div class="ic">'+r[0]+'</div><div><b>'+r[1]+'</b><span>'+r[2]+'</span></div></li>';}).join('')+'</ul><p class="lg-f">The 2D button shows a flat map from above. Press 3D to tilt it back.</p><button type="button" class="lg-ok">Got it</button>';
 map.appendChild(lg);
