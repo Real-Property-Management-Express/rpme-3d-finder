@@ -82,7 +82,7 @@ qb.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-
 if(mob()){qb.classList.add('mq');map.appendChild(qb);}else{btn.parentNode.insertBefore(qb,btn);}
 function showLg(on){lg.classList.toggle('on',on);qb.setAttribute('aria-expanded',String(on));if(on){qb.classList.remove('nudge');}}
 function closeLg(){showLg(false);try{localStorage.setItem('or3dHelpSeen','1');}catch(e){}qb.classList.remove('nudge');void qb.offsetWidth;qb.classList.add('nudge');qb.focus({preventScroll:true});}
-var seen=false;try{seen=localStorage.getItem('or3dHelpSeen')==='1';}catch(e){}
+var seen=false;try{seen=localStorage.getItem('or3dHelpSeen')==='1';}catch(e){}if(window.OR3D_UI&&OR3D_UI.floorFirst)seen=true;
 showLg(!seen);
 qb.addEventListener('click',function(){if(lg.classList.contains('on'))closeLg();else showLg(true);});
 lg.querySelector('.lg-x').addEventListener('click',closeLg);lg.querySelector('.lg-ok').addEventListener('click',closeLg);
