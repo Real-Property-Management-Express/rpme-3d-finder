@@ -5,7 +5,8 @@
 (function(){
 'use strict';
 var root=document.getElementById('or3d');
-if(!root||!(window.OR3D_UI&&window.OR3D_UI.floorFirst))return;
+var UI=window.OR3D_UI||{};
+if(!root||!(UI.floorFirst||UI.siteMap))return;
 var mob=function(){return window.matchMedia('(max-width:767px)').matches;};
 var DOTS='<svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="4.5" cy="10" r="1.6"/><circle cx="10" cy="10" r="1.6"/><circle cx="15.5" cy="10" r="1.6"/></svg>';
 
@@ -62,10 +63,44 @@ function oneLine(){
 function hint(){
   var map=document.getElementById('omap');
   if(!map)return false;
-  if(!map.querySelector('.or3d-step')){var h=document.createElement('p');h.className='or3d-step';h.textContent=(mob()?'Tap':'Click')+' a building to see its floor plans';map.appendChild(h);}
+  if(!map.querySelector('.or3d-step')){var h=document.createElement('p');h.className='or3d-step';h.textContent=UI.siteMap?(mob()?'Tap':'Click')+' an apartment or a building number':(mob()?'Tap':'Click')+' a building to see its floor plans';map.appendChild(h);}
   return true;
 }
 
-var jobs=[more,sortInFilters,oneLine,hint],n=0;
+/* Site map sites: the main filters sit in plain sight as dropdowns; the drawer keeps the rest (baths, accessible, sort). */
+function bar(){
+  if(!UI.siteMap)return true;
+  var head=root.querySelector('.of-bar'),f=document.getElementById('fmore');
+  if(!head||!f)return false;
+  if(root.querySelector('.s2-fbar'))return true;
+  var chips=function(k){return [].slice.call(f.querySelectorAll('.chips[data-f="'+k+'"] button'));};
+  var opt=function(v,t){return '<option value="'+v+'">'+t+'</option>';};
+  var fromChips=function(k){return opt('','Any')+chips(k).map(function(b){return opt(b.dataset.v,(b.firstChild&&b.firstChild.nodeType===3?b.firstChild.nodeValue:b.textContent).trim());}).join('');};
+  var fromSel=function(id){var s=document.getElementById(id);return s?s.innerHTML:'';};
+  var w=document.createElement('div');w.className='s2-fbar';
+  w.innerHTML='<label>Price<select data-k="price">'+fromChips('price')+'</select></label>'+
+    '<label>Move-in date<input type="date" data-k="move"></label>'+
+    '<label>Bedrooms<select data-k="beds">'+fromChips('beds')+'</select></label>'+
+    '<label>Square footage<select data-k="sqft">'+fromSel('sqft')+'</select></label>'+
+    '<label>Floor plan<select data-k="plan">'+fromSel('plan')+'</select></label>'+
+    '<div class="s2-fact"><button type="button" class="s2-reset">Reset</button></div>';
+  head.parentNode.insertBefore(w,head.nextSibling);
+  var mv=document.getElementById('moveby'),mi=w.querySelector('[data-k="move"]');if(mv&&mv.min)mi.min=mv.min;
+  function setChips(k,v){chips(k).forEach(function(b){var on=b.getAttribute('aria-pressed')==='true';if(on!==(b.dataset.v===v))b.click();});}
+  function setSel(id,v){var s=document.getElementById(id);if(s&&s.value!==v){s.value=v;s.dispatchEvent(new Event('change',{bubbles:true}));}}
+  w.addEventListener('change',function(e){var k=e.target.dataset.k,v=e.target.value;
+    if(k==='price'||k==='beds')setChips(k,v);else if(k==='sqft'||k==='plan')setSel(k,v);
+    else if(k==='move'&&mv){mv.value=v;mv.dispatchEvent(new Event('input',{bubbles:true}));mv.dispatchEvent(new Event('change',{bubbles:true}));}});
+  function sync(){var one=function(k){var p=chips(k).filter(function(b){return b.getAttribute('aria-pressed')==='true';});return p.length===1?p[0].dataset.v:'';};
+    w.querySelector('[data-k="price"]').value=one('price');w.querySelector('[data-k="beds"]').value=one('beds');
+    ['sqft','plan'].forEach(function(id){var s=document.getElementById(id);if(s)w.querySelector('[data-k="'+id+'"]').value=s.value;});
+    if(mv)mi.value=mv.value||'';}
+  f.addEventListener('click',function(){setTimeout(sync,0);});f.addEventListener('change',function(){setTimeout(sync,0);});
+  w.querySelector('.s2-reset').addEventListener('click',function(){var fl=document.getElementById('floorf'),keep=fl?fl.value:'';var c=document.getElementById('clearf');if(c)c.click();if(mv&&mv.value){mv.value='';mv.dispatchEvent(new Event('input',{bubbles:true}));mv.dispatchEvent(new Event('change',{bubbles:true}));}if(fl&&keep!==''){fl.value=keep;fl.dispatchEvent(new Event('change',{bubbles:true}));}setTimeout(sync,0);});
+  sync();
+  return true;
+}
+
+var jobs=[more,sortInFilters,oneLine,hint,bar],n=0;
 (function tick(){jobs=jobs.filter(function(f){try{return!f();}catch(e){return false;}});if(jobs.length&&++n<120)setTimeout(tick,250);})();
 })();
