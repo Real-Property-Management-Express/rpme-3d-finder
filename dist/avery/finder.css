@@ -635,11 +635,11 @@ html.or3d-locked #or3d{min-height:0}
 #or3d .p2-l.dk{color:#fff}
 #or3d .p2-l.hall{color:var(--muted);font-weight:500}
 #or3d .p2-img{pointer-events:none}
-#or3d .p2-u.pv{fill-opacity:.16;stroke:var(--surface);stroke-width:1.5}
+#or3d .p2-u.pv{fill-opacity:.16;stroke:var(--uc,var(--navy));stroke:color-mix(in srgb,var(--uc,var(--navy)) 62%,var(--ink));stroke-width:4;stroke-linejoin:round}
 #or3d .p2-u.pv.hot{fill-opacity:.32;filter:none}
 #or3d .p2-u.pv.lz{fill-opacity:.55}
-#or3d .p2-u.pv.dim{fill:var(--bg)!important;fill-opacity:.72}
-#or3d .p2-u.pv.sel{fill-opacity:.12;stroke:var(--ink);stroke-width:3.5}
+#or3d .p2-u.pv.dim{fill:var(--bg)!important;fill-opacity:.72;stroke-opacity:.5}
+#or3d .p2-u.pv.sel{fill-opacity:.12;stroke:var(--ink);stroke-width:6}
 #or3d .p2-l.pill{background:var(--surface);border:1px solid var(--line);border-radius:var(--t2-pill,999px);padding:4px 10px;box-shadow:0 2px 8px #0000001f;overflow:visible;max-width:none!important}
 #or3d .p2-l.pill b{display:inline;font-size:15px}
 #or3d .p2-l.pill span{display:inline;margin-left:6px;font-size:14px;color:var(--muted)}
