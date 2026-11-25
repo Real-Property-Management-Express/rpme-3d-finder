@@ -4,7 +4,7 @@ ROOT = os.path.dirname(os.path.abspath(__file__))
 SRC = os.path.join(ROOT, 'src')
 
 CSS = ['styles.css']
-JS = ['tour.js', 'explore.js', 'extras.js', 'look.js', 'panel.js', 'nav.js', 'app.js', 'calculator.js']
+JS = ['tour.js', 'explore.js', 'extras.js', 'look.js', 'panel.js', 'nav.js', 'app.js', 'calculator.js', 'simple.js']
 
 PROPERTIES = {
     'overland': {

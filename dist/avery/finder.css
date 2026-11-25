@@ -685,3 +685,26 @@ html.or3d-locked #or3d{min-height:0}
 #or3d.ff .fpick .fp-f button{padding:0 2px;white-space:nowrap}
 #or3d.v2d #mcard.bl{display:none}
 }
+#or3d .or3d-more{position:relative;display:flex}
+#or3d .or3d-mbtn{display:inline-flex;align-items:center;gap:6px}
+#or3d .or3d-mbtn svg{width:16px;height:16px;fill:currentColor}
+#or3d .or3d-mmenu{position:absolute;right:0;bottom:calc(100% + 8px);z-index:30;min-width:250px;display:flex;flex-direction:column;gap:2px;padding:6px;background:var(--surface);border:1px solid var(--line);border-radius:calc(12px*var(--t2-rk,1));box-shadow:0 12px 28px #0000002e}
+#or3d .or3d-mmenu[hidden]{display:none}
+#or3d .or3d-mmenu .mrow{display:flex;align-items:center;gap:10px;padding:4px 8px 4px 4px;border-radius:8px;cursor:pointer;font:600 15px/1.2 var(--f);color:var(--ink)}
+#or3d .or3d-mmenu .mrow[hidden]{display:none}
+#or3d .or3d-mmenu .mrow:hover{background:var(--surface-2)}
+#or3d .or3d-mmenu .mrow>button{position:static;flex:none;margin:0;box-shadow:none;transform:none}
+#or3d .or3d-mmenu .ptour-map{height:40px;padding:0 12px;border-radius:9px;background:var(--surface-2);color:var(--ink)}
+#or3d .or3d-mmenu .ptour-map .pl{display:none}
+#or3d .or3d-mmenu .ptour-map .ps{display:inline}
+#or3d .fmore .osort-f{display:flex;flex-direction:column;gap:6px;margin:0 16px 0 0;font:700 14px/1.2 var(--f);color:var(--muted)}
+#or3d.ff .ctabs,#or3d.ff #aview .or3d-fees{display:none}
+#or3d .or3d-mmenu .mrow>.cbtn>span{display:none}
+#or3d #aview .or3d-gt .gt-sep{color:var(--muted)}
+#or3d #aview .or3d-gt .gt-fees{appearance:none;border:0;height:auto;padding:0;background:none;color:var(--navy);font:700 14px/1.4 var(--f);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+#or3d .or3d-step{display:none;position:absolute;left:16px;bottom:16px;z-index:4;margin:0;padding:10px 14px;border-radius:var(--t2-pill,999px);background:var(--surface);color:var(--ink);border:1px solid var(--line);box-shadow:0 6px 16px #0000001f;font:600 15px/1.2 var(--f)}
+#or3d.ff:not(.inb):not(.ptour-on) .or3d-step{display:block}
+@media (max-width:767px){
+#or3d .or3d-mmenu{bottom:auto;top:calc(100% + 8px)}
+#or3d .or3d-step{left:50%;transform:translateX(-50%);bottom:92px;white-space:nowrap}
+}
