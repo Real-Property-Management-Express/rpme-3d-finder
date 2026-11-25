@@ -63,7 +63,7 @@ function oneLine(){
 function hint(){
   var map=document.getElementById('omap');
   if(!map)return false;
-  if(!map.querySelector('.or3d-step')){var h=document.createElement('p');h.className='or3d-step';h.textContent=UI.siteMap?(mob()?'Tap':'Click')+' an apartment or a building number':(mob()?'Tap':'Click')+' a building to see its floor plans';map.appendChild(h);}
+  if(!map.querySelector('.or3d-step')){var h=document.createElement('p');h.className='or3d-step';h.textContent=UI.siteMap?(mob()?'Tap':'Click')+' a building, or pick a floor':(mob()?'Tap':'Click')+' a building to see its floor plans';map.appendChild(h);}
   return true;
 }
 

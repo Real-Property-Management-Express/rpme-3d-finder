@@ -763,12 +763,17 @@ html.or3d-locked #or3d{min-height:0}
 #or3d .s2-rail{display:none}
 #or3d.sm:not(.inb):not(.ptour-on) .s2-rail{display:flex;position:absolute;left:16px;top:68px;z-index:6;flex-direction:column;gap:6px;width:150px;padding:10px;background:var(--surface);border:1px solid var(--line);border-radius:calc(12px*var(--t2-rk,1));box-shadow:0 6px 16px #0000001f}
 #or3d .s2-rail .s2-h{font:700 13px/1.2 var(--f);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:2px 4px 4px}
-#or3d .s2-rail button{appearance:none;display:flex;align-items:baseline;justify-content:space-between;gap:8px;border:0;border-radius:8px;padding:10px;background:var(--surface-2);color:var(--ink);cursor:pointer;font:600 14px/1 var(--f)}
+#or3d .s2-rail button{appearance:none;display:flex;align-items:baseline;justify-content:space-between;gap:8px;border:0;border-radius:8px;padding:10px;background:var(--surface-2);color:var(--ink);cursor:pointer;font:600 14px/1 var(--f);transition:background-color .2s var(--t2-ease,ease),color .2s var(--t2-ease,ease),transform .2s var(--t2-ease,ease),box-shadow .2s var(--t2-ease,ease)}
+#or3d .s2-rail button:hover{background:color-mix(in srgb,var(--navy) 12%,var(--surface));transform:translateY(-1px);box-shadow:0 4px 10px #0000001a}
+#or3d .s2-rail button:active{transform:none;box-shadow:none}
+#or3d .s2-rail button:focus-visible{outline:2px solid var(--navy);outline-offset:2px}
 #or3d .s2-rail button b{font-size:16px}
 #or3d .s2-rail button.none{opacity:.55}
 #or3d .s2-rail button[aria-pressed=true]{background:var(--navy);color:#fff}
 #or3d .s2-rail .s2-3d{justify-content:center;margin-top:6px;background:var(--surface);border:1.5px solid var(--navy);color:var(--navy);font-weight:700}
-#or3d .s2-rail .s2-3d[aria-pressed=true]{background:var(--surface);color:var(--navy)}
+#or3d .s2-rail .s2-3d:hover{background:var(--navy);color:#fff}
+#or3d .s2-rail button[aria-pressed=true]:hover{background:var(--navy);color:#fff;filter:brightness(1.12)}
+@media (prefers-reduced-motion:reduce){#or3d .s2-rail button{transition:none}#or3d .s2-rail button:hover{transform:none}}
 #or3d.sm.s2 #plan2d{background:transparent}
 @media (max-width:767px){
   #or3d.sm .s2-fbar{display:none}
