@@ -890,7 +890,7 @@ ALL=ALL.concat(b.apts)});setTimeout(function(){ALL.forEach(function(a){BYID[a.id
 ;$("legend").innerHTML=BEDS.map(function(x){return'<li><span class="sw" style="background:'+x.color+'"></span>'+x.label+"</li>"}).join("")+(BLDGS.some(function(b){return TYPES[b.type].office})?'<li><span class="sw" style="background:'+SPACE_COLOR+'"></span>Office &amp; community room</li>':"")
 ;function mixBar(apts){var n=apts.length||1;return'<span class="mix">'+BEDS.map(function(x){var c=apts.filter(function(a){return a.beds===x.k}).length;return c?'<i style="width:'+c/n*100+"%;background:"+x.color+'"></i>':""}).join("")+"</span>"}function meta(a,o){o=o||{}
 ;return'<span class="meta">'+(o.bldg&&BLDGS.length>1?'<span title="Building">'+IC.bldg+(o.full?a.b.name:a.b.num)+"</span>":"")+'<span title="Apartment number">'+IC.unit+a.unit+"</span>"+(/bed|studio/i.test(a.nice)?"":'<span title="Bedrooms">'+IC.bed+(a.beds===0?"Studio":a.beds+" bd")+'</span><span title="Bathrooms">'+IC.bath+a.baths+" ba</span>")+(o.floor?'<span title="Floor">'+IC.floor+ORD(a.floor+a.b.base)+" floor</span>":"")+(o.noArea?"":'<span title="Size">'+IC.area+a.sf.toLocaleString("en-US")+" sq ft</span>")+(a.ada?'<span class="acc">'+IC.acc+"Accessible</span>":"")+"</span>"
-}function spc(a){return a.special&&!a.off?'<span class="spc">'+a.special.replace(/[&<>"]/g,function(c){return"&#"+c.charCodeAt(0)+";"})+"</span>":""}function unitLine(a,withBldg){return meta(a,{bldg:withBldg,floor:withBldg})}function cardHTML(a){return'<div class="card"><div class="c-top"><h3>'+a.nice+'</h3><div class="c-rent"><b>'+money(a.rent)+"</b></div></div>"+meta(a,{bldg:true,floor:true
+}function spc(a){return a.special&&!a.off?'<span class="spc">'+a.special.replace(/[&<>"]/g,function(c){return"&#"+c.charCodeAt(0)+";"})+"</span>":""}function unitLine(a,withBldg){return meta(a,{bldg:withBldg,floor:withBldg})}function cardHTML(a){return'<div class="card"><div class="c-top"><h3>'+a.nice+'</h3><div class="c-rent"><b>'+money(a.rent)+"</b>"+(window.OR3D_LEASE&&OR3D_LEASE.base12?"<span>12-month lease</span>":"")+"</div></div>"+meta(a,{bldg:true,floor:true
 })+(window.OR3D_ROWX?window.OR3D_ROWX(a,1):"")+spc(a)+'<div class="c-plan">'+fpBig(a)+(TOURS[a.beds]?'<button type="button" class="c-3d" data-tour="'+a.beds+'">'+IC.tour+"3D tour</button>":"")+"</div>"+(a.off?'<div class="cta off"><p>Not available right now. Ask us about similar apartments.</p></div>':'<div class="cta"><button type="button" class="sched" data-schedule="'+a.id+'" data-label="'+a.b.num+" #"+a.unit+" ("+a.nice+')">Schedule a tour</button><a class="pri" href="'+(a.apply||"#apply")+'">Apply now</a></div>')+'<div class="cta see3d"><button type="button" data-see3d="1">See it on the 3D map</button></div></div>'
 }function aptRow(a,withBldg){
 return"<li"+(state.sel===a?' class="open"':"")+'><button type="button" class="urow'+(matches(a)?"":" dim")+(state.hover===a?" hot":"")+'" data-id="'+a.id+'" aria-current="'+(state.sel===a)+'"><span class="fpt">'+fpThumb(a)+'<span class="sw" style="background:'+bedColor(a.beds)+'"></span></span><span><span class="t">'+a.nice+(TOURS[a.beds]?'<span class="b3d" title="3D tour available">'+IC.tour+"3D</span>":"")+"</span>"+unitLine(a,withBldg)+(window.OR3D_ROWX?window.OR3D_ROWX(a):"")+spc(a)+'</span><span class="rentv">'+money(a.rent)+"</span></button>"+(state.sel===a?cardHTML(a):"")+"</li>"
@@ -1042,16 +1042,18 @@ function fees(a){
   return {appFee:+f.appFee||(window.T2&&+window.T2.appFee)||(S&&S.appFee)||0, monthly:monthly||[], optional:optional, oneTime:oneTime||[], utilities:note, pets:pets};
 }
 function sum(list){ return list.reduce(function(t,x){ return t+(+x.amount||0); },0); }
-function unitData(a){ var P=window.OR3D_PRICING; return P&&P.units&&P.units[a.id]||null; }
+function b12(){ var L=window.OR3D_LEASE; return !!(L&&L.base12); }
+function leaseNote(){ var L=window.OR3D_LEASE||{}; return L.note||('We offer '+(L.terms?L.terms+' month':'several')+' leases. Rent varies by lease length; the base rent for a 12-month lease is shown. Our onsite team can price other lease lengths for you.'); }
+function unitData(a){ if(b12()) return null; var P=window.OR3D_PRICING; return P&&P.units&&P.units[a.id]||null; }
 function datesFor(a){ var u=unitData(a); return u&&u.byDate?Object.keys(u.byDate).sort():[]; }
 function termsFor(a,date){
   var u=unitData(a), list=u?((date&&u.byDate&&u.byDate[date])||u.terms):null;
-  if(!list||!list.length) list=window.OR3D_DEMO_TERMS?demoTerms(a):[{months:12,rent:a.rent}];
+  if(!list||!list.length) list=window.OR3D_DEMO_TERMS&&!b12()?demoTerms(a):[{months:12,rent:a.rent}];
   return list.filter(function(t){ return +t.rent>0; }).sort(function(x,y){ return x.months-y.months; });
 }
 var DEMO={6:.15,7:.12,8:.10,9:.08,10:.05,11:.03,12:0,13:-.005,14:-.01,15:-.015};
 function demoTerms(a){ return Object.keys(DEMO).map(function(m){ return {months:+m, rent:+m===12?a.rent:Math.round(a.rent*(1+DEMO[m])/5)*5}; }); }
-function isDemo(a){ return !!window.OR3D_DEMO_TERMS && !unitData(a); }
+function isDemo(a){ return !!window.OR3D_DEMO_TERMS && !b12() && !unitData(a); }
 function api(){ return window.__or||null; }
 function aptById(id){ var o=api(); if(!o) return null; var hit=null; o.BLDGS.forEach(function(b){ b.apts.forEach(function(a){ if(a.id===id) hit=a; }); }); return hit; }
 function addButtons(root){
@@ -1130,6 +1132,7 @@ function renderIn(){
   if(d.length) h+='<label>Move-in date<select id="ccDate">'+d.map(function(x){ return '<option value="'+x+'"'+(x===cur.date?' selected':'')+'>'+niceDate(x)+'</option>'; }).join('')+'</select></label>';
   if(t.length>1) h+='<label>Lease length<select id="ccTerm">'+t.map(function(x){ return '<option value="'+x.months+'"'+(x.months===cur.months?' selected':'')+'>'+x.months+' month'+(x.months>1?'s':'')+', '+fmt(x.rent)+' base rent</option>'; }).join('')+'</select></label>';
   else h+='<div class="cc-lbl">Lease length<span class="cc-fixed">'+t[0].months+' month'+(t[0].months>1?'s':'')+'</span></div>';
+  if(b12()) h+='<p class="cc-lnote">'+esc(leaseNote())+'</p>';
   if(F.appFee) h+='<div class="cc-lbl" id="ccNl">Number of applicants<span class="cc-step" role="group" aria-labelledby="ccNl"><button type="button" data-ccn="-1" aria-label="One fewer applicant"'+(cur.n<=1?' disabled':'')+'>&minus;</button><output>'+cur.n+'</output><button type="button" data-ccn="1" aria-label="One more applicant"'+(cur.n>=6?' disabled':'')+'>+</button></span></div>';
   if(F.pets){ var step=function(k,label,id){ return '<div class="cc-lbl" id="'+id+'">'+label+'<span class="cc-step" role="group" aria-labelledby="'+id+'"><button type="button" data-ccp="'+k+':-1" aria-label="One fewer"'+(cur[k]<=0?' disabled':'')+'>&minus;</button><output>'+cur[k]+'</output><button type="button" data-ccp="'+k+':1" aria-label="One more"'+(cur[k]>=4?' disabled':'')+'>+</button></span></div>'; };
     h+='<fieldset class="cc-opt cc-pets"><legend>Pets</legend>'+step('cats','Cats or dogs','ccPc')+step('others','Other pets','ccPo')+'</fieldset>'; }

@@ -27,16 +27,18 @@ function fees(a){
   return {appFee:+f.appFee||(window.T2&&+window.T2.appFee)||(S&&S.appFee)||0, monthly:monthly||[], optional:optional, oneTime:oneTime||[], utilities:note, pets:pets};
 }
 function sum(list){ return list.reduce(function(t,x){ return t+(+x.amount||0); },0); }
-function unitData(a){ var P=window.OR3D_PRICING; return P&&P.units&&P.units[a.id]||null; }
+function b12(){ var L=window.OR3D_LEASE; return !!(L&&L.base12); }
+function leaseNote(){ var L=window.OR3D_LEASE||{}; return L.note||('We offer '+(L.terms?L.terms+' month':'several')+' leases. Rent varies by lease length; the base rent for a 12-month lease is shown. Our onsite team can price other lease lengths for you.'); }
+function unitData(a){ if(b12()) return null; var P=window.OR3D_PRICING; return P&&P.units&&P.units[a.id]||null; }
 function datesFor(a){ var u=unitData(a); return u&&u.byDate?Object.keys(u.byDate).sort():[]; }
 function termsFor(a,date){
   var u=unitData(a), list=u?((date&&u.byDate&&u.byDate[date])||u.terms):null;
-  if(!list||!list.length) list=window.OR3D_DEMO_TERMS?demoTerms(a):[{months:12,rent:a.rent}];
+  if(!list||!list.length) list=window.OR3D_DEMO_TERMS&&!b12()?demoTerms(a):[{months:12,rent:a.rent}];
   return list.filter(function(t){ return +t.rent>0; }).sort(function(x,y){ return x.months-y.months; });
 }
 var DEMO={6:.15,7:.12,8:.10,9:.08,10:.05,11:.03,12:0,13:-.005,14:-.01,15:-.015};
 function demoTerms(a){ return Object.keys(DEMO).map(function(m){ return {months:+m, rent:+m===12?a.rent:Math.round(a.rent*(1+DEMO[m])/5)*5}; }); }
-function isDemo(a){ return !!window.OR3D_DEMO_TERMS && !unitData(a); }
+function isDemo(a){ return !!window.OR3D_DEMO_TERMS && !b12() && !unitData(a); }
 function api(){ return window.__or||null; }
 function aptById(id){ var o=api(); if(!o) return null; var hit=null; o.BLDGS.forEach(function(b){ b.apts.forEach(function(a){ if(a.id===id) hit=a; }); }); return hit; }
 
@@ -119,6 +121,7 @@ function renderIn(){
   if(d.length) h+='<label>Move-in date<select id="ccDate">'+d.map(function(x){ return '<option value="'+x+'"'+(x===cur.date?' selected':'')+'>'+niceDate(x)+'</option>'; }).join('')+'</select></label>';
   if(t.length>1) h+='<label>Lease length<select id="ccTerm">'+t.map(function(x){ return '<option value="'+x.months+'"'+(x.months===cur.months?' selected':'')+'>'+x.months+' month'+(x.months>1?'s':'')+', '+fmt(x.rent)+' base rent</option>'; }).join('')+'</select></label>';
   else h+='<div class="cc-lbl">Lease length<span class="cc-fixed">'+t[0].months+' month'+(t[0].months>1?'s':'')+'</span></div>';
+  if(b12()) h+='<p class="cc-lnote">'+esc(leaseNote())+'</p>';
   if(F.appFee) h+='<div class="cc-lbl" id="ccNl">Number of applicants<span class="cc-step" role="group" aria-labelledby="ccNl"><button type="button" data-ccn="-1" aria-label="One fewer applicant"'+(cur.n<=1?' disabled':'')+'>&minus;</button><output>'+cur.n+'</output><button type="button" data-ccn="1" aria-label="One more applicant"'+(cur.n>=6?' disabled':'')+'>+</button></span></div>';
   if(F.pets){ var step=function(k,label,id){ return '<div class="cc-lbl" id="'+id+'">'+label+'<span class="cc-step" role="group" aria-labelledby="'+id+'"><button type="button" data-ccp="'+k+':-1" aria-label="One fewer"'+(cur[k]<=0?' disabled':'')+'>&minus;</button><output>'+cur[k]+'</output><button type="button" data-ccp="'+k+':1" aria-label="One more"'+(cur[k]>=4?' disabled':'')+'>+</button></span></div>'; };
     h+='<fieldset class="cc-opt cc-pets"><legend>Pets</legend>'+step('cats','Cats or dogs','ccPc')+step('others','Other pets','ccPo')+'</fieldset>'; }
